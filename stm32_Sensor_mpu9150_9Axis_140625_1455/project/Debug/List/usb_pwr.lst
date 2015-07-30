@@ -1,0 +1,345 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_pwr.c                                             #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_pwr.c -D USE_STDPERIPH_DRIVER -lcN                #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_pwr.lst                            #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_pwr.o                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\usb_pwr.c
+      1          /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+      2          * File Name          : usb_pwr.c
+      3          * Author             : MCD Application Team
+      4          * Version            : V3.2.1
+      5          * Date               : 07/05/2010
+      6          * Description        : Connection/disconnection & power management
+      7          ********************************************************************************
+      8          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+      9          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+     10          * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+     11          * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+     12          * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+     13          * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     14          *******************************************************************************/
+     15          
+     16          /* Includes ------------------------------------------------------------------*/
+     17          #include "stm32f10x.h"
+     18          #include "usb_lib.h"
+     19          #include "usb_conf.h"
+     20          #include "usb_pwr.h"
+     21          #include "hw_config.h"
+     22          
+     23          /* Private typedef -----------------------------------------------------------*/
+     24          /* Private define ------------------------------------------------------------*/
+     25          /* Private macro -------------------------------------------------------------*/
+     26          /* Private variables ---------------------------------------------------------*/
+     27          __IO uint32_t bDeviceState = UNCONNECTED; /* USB device status */
+     28          
+     29          #if 1
+     30          __IO bool fSuspendEnabled = TRUE;  /* true when suspend is possible */
+     31          #else
+     32          __IO bool fSuspendEnabled = FALSE;  /* true when suspend is possible */
+     33          #endif
+     34          
+     35          struct
+     36          {
+     37            __IO RESUME_STATE eState;
+     38            __IO uint8_t bESOFcnt;
+     39          }ResumeS;
+     40          
+     41          /* Extern variables ----------------------------------------------------------*/
+     42          /* Private function prototypes -----------------------------------------------*/
+     43          /* Extern function prototypes ------------------------------------------------*/
+     44          /* Private functions ---------------------------------------------------------*/
+     45          
+     46          /*******************************************************************************
+     47          * Function Name  : PowerOn
+     48          * Description    :
+     49          * Input          : None.
+     50          * Output         : None.
+     51          * Return         : USB_SUCCESS.
+     52          *******************************************************************************/
+     53          RESULT PowerOn(void)
+     54          {
+     55          #ifndef STM32F10X_CL
+     56            uint16_t wRegVal;
+     57          
+     58            /*** cable plugged-in ? ***/
+     59          //  USB_Cable_Config(ENABLE);
+     60          
+     61            /*** CNTR_PWDN = 0 ***/
+     62            wRegVal = CNTR_FRES;
+     63            _SetCNTR(wRegVal);
+     64          
+     65            /*** CNTR_FRES = 0 ***/
+     66            wInterrupt_Mask = 0;
+     67            _SetCNTR(wInterrupt_Mask);
+     68            /*** Clear pending interrupts ***/
+     69            _SetISTR(0);
+     70            /*** Set interrupt mask ***/
+     71            wInterrupt_Mask = CNTR_RESETM | CNTR_SUSPM | CNTR_WKUPM;
+     72            _SetCNTR(wInterrupt_Mask);
+     73          #endif /* STM32F10X_CL */
+     74          
+     75            return USB_SUCCESS;
+     76          }
+     77          
+     78          /*******************************************************************************
+     79          * Function Name  : PowerOff
+     80          * Description    : handles switch-off conditions
+     81          * Input          : None.
+     82          * Output         : None.
+     83          * Return         : USB_SUCCESS.
+     84          *******************************************************************************/
+     85          RESULT PowerOff()
+     86          {
+     87          #ifndef STM32F10X_CL
+     88            /* disable all ints and force USB reset */
+     89            _SetCNTR(CNTR_FRES);
+     90            /* clear interrupt status register */
+     91            _SetISTR(0);
+     92            /* Disable the Pull-Up*/
+     93            USB_Cable_Config(DISABLE);
+     94            /* switch-off device */
+     95            _SetCNTR(CNTR_FRES + CNTR_PDWN);
+     96          #endif /* STM32F10X_CL */
+     97          
+     98            /* sw variables reset */
+     99            /* ... */
+    100          
+    101            return USB_SUCCESS;
+    102          }
+    103          
+    104          /*******************************************************************************
+    105          * Function Name  : Suspend
+    106          * Description    : sets suspend mode operating conditions
+    107          * Input          : None.
+    108          * Output         : None.
+    109          * Return         : USB_SUCCESS.
+    110          *******************************************************************************/
+    111          void Suspend(void)
+    112          {
+    113          #ifndef STM32F10X_CL
+    114            uint16_t wCNTR;
+    115            /* suspend preparation */
+    116            /* ... */
+    117          
+    118            /* macrocell enters suspend mode */
+    119            wCNTR = _GetCNTR();
+    120            wCNTR |= CNTR_FSUSP;
+    121            _SetCNTR(wCNTR);
+    122          #endif /* STM32F10X_CL */
+    123          
+    124            /* ------------------ ONLY WITH BUS-POWERED DEVICES ---------------------- */
+    125            /* power reduction */
+    126            /* ... on connected devices */
+    127          
+    128          #ifndef STM32F10X_CL
+    129            /* force low-power mode in the macrocell */
+    130            wCNTR = _GetCNTR();
+    131            wCNTR |= CNTR_LPMODE;
+    132            _SetCNTR(wCNTR);
+    133          #endif /* STM32F10X_CL */
+    134          
+    135            /* switch-off the clocks */
+    136            /* ... */
+    137            Enter_LowPowerMode();
+    138          
+    139          }
+    140          
+    141          /*******************************************************************************
+    142          * Function Name  : Resume_Init
+    143          * Description    : Handles wake-up restoring normal operations
+    144          * Input          : None.
+    145          * Output         : None.
+    146          * Return         : USB_SUCCESS.
+    147          *******************************************************************************/
+    148          void Resume_Init(void)
+    149          {
+    150          #ifndef STM32F10X_CL
+    151            uint16_t wCNTR;
+    152          #endif /* STM32F10X_CL */ 
+    153          
+    154            /* ------------------ ONLY WITH BUS-POWERED DEVICES ---------------------- */
+    155            /* restart the clocks */
+    156            /* ...  */
+    157          
+    158          #ifndef STM32F10X_CL
+    159            /* CNTR_LPMODE = 0 */
+    160            wCNTR = _GetCNTR();
+    161            wCNTR &= (~CNTR_LPMODE);
+    162            _SetCNTR(wCNTR);
+    163          #endif /* STM32F10X_CL */ 
+    164          
+    165            /* restore full power */
+    166            /* ... on connected devices */
+    167            Leave_LowPowerMode();
+    168          
+    169          #ifndef STM32F10X_CL
+    170            /* reset FSUSP bit */
+    171            _SetCNTR(IMR_MSK);
+    172          #endif /* STM32F10X_CL */
+    173          
+    174            /* reverse suspend preparation */
+    175            /* ... */
+    176          
+    177          }
+    178          
+    179          /*******************************************************************************
+    180          * Function Name  : Resume
+    181          * Description    : This is the state machine handling resume operations and
+    182          *                 timing sequence. The control is based on the Resume structure
+    183          *                 variables and on the ESOF interrupt calling this subroutine
+    184          *                 without changing machine state.
+    185          * Input          : a state machine value (RESUME_STATE)
+    186          *                  RESUME_ESOF doesn't change ResumeS.eState allowing
+    187          *                  decrementing of the ESOF counter in different states.
+    188          * Output         : None.
+    189          * Return         : None.
+    190          *******************************************************************************/
+    191          void Resume(RESUME_STATE eResumeSetVal)
+    192          {
+    193          #ifndef STM32F10X_CL
+    194            uint16_t wCNTR;
+    195          #endif /* STM32F10X_CL */
+    196          
+    197            if (eResumeSetVal != RESUME_ESOF)
+    198              ResumeS.eState = eResumeSetVal;
+    199          
+    200            switch (ResumeS.eState)
+    201            {
+    202              case RESUME_EXTERNAL:
+    203                Resume_Init();
+    204                ResumeS.eState = RESUME_OFF;
+    205                break;
+    206              case RESUME_INTERNAL:
+    207                Resume_Init();
+    208                ResumeS.eState = RESUME_START;
+    209                break;
+    210              case RESUME_LATER:
+    211                ResumeS.bESOFcnt = 2;
+    212                ResumeS.eState = RESUME_WAIT;
+    213                break;
+    214              case RESUME_WAIT:
+    215                ResumeS.bESOFcnt--;
+    216                if (ResumeS.bESOFcnt == 0)
+    217                  ResumeS.eState = RESUME_START;
+    218                break;
+    219              case RESUME_START:
+    220               #ifdef STM32F10X_CL
+    221                OTGD_FS_SetRemoteWakeup();
+    222               #else 
+    223                wCNTR = _GetCNTR();
+    224                wCNTR |= CNTR_RESUME;
+    225                _SetCNTR(wCNTR);
+    226               #endif /* STM32F10X_CL */
+    227                ResumeS.eState = RESUME_ON;
+    228                ResumeS.bESOFcnt = 10;
+    229                break;
+    230              case RESUME_ON:
+    231              #ifndef STM32F10X_CL      
+    232                ResumeS.bESOFcnt--;
+    233                if (ResumeS.bESOFcnt == 0)
+    234                {
+    235               #endif /* STM32F10X_CL */    
+    236                 #ifdef STM32F10X_CL
+    237                  OTGD_FS_ResetRemoteWakeup();
+    238                 #else
+    239                  wCNTR = _GetCNTR();
+    240                  wCNTR &= (~CNTR_RESUME);
+    241                  _SetCNTR(wCNTR);
+    242                 #endif /* STM32F10X_CL */
+    243                  ResumeS.eState = RESUME_OFF;
+    244               #ifndef STM32F10X_CL
+    245                }
+    246               #endif /* STM32F10X_CL */
+    247                break;
+    248              case RESUME_OFF:
+    249              case RESUME_ESOF:
+    250              default:
+    251                ResumeS.eState = RESUME_OFF;
+    252                break;
+    253            }
+    254          }
+    255          
+    256          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  PowerOff
+              8 -> USB_Cable_Config
+        0  PowerOn
+       16  Resume
+             16 -> Resume_Init
+        8  Resume_Init
+              8 -> Leave_LowPowerMode
+        8  Suspend
+              8 -> Enter_LowPowerMode
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable4
+       4  ??DataTable4_1
+       4  ??DataTable4_2
+       4  ??DataTable4_3
+      30  PowerOff
+      50  PowerOn
+     186  Resume
+       4  ResumeS
+      34  Resume_Init
+      40  Suspend
+       4  bDeviceState
+       1  fSuspendEnabled
+
+ 
+   8 bytes in section .bss
+   1 byte  in section .data
+ 356 bytes in section .text
+ 
+ 356 bytes of CODE memory
+   9 bytes of DATA memory
+
+Errors: none
+Warnings: none

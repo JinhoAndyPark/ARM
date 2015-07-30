@@ -1,0 +1,179 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:06 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_endp.c                                            #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_endp.c -D USE_STDPERIPH_DRIVER -lcN               #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_endp.lst                           #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_endp.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\usb_endp.c
+      1          /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+      2          * File Name          : usb_endp.c
+      3          * Author             : MCD Application Team
+      4          * Version            : V3.2.1
+      5          * Date               : 07/05/2010
+      6          * Description        : Endpoint routines
+      7          ********************************************************************************
+      8          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+      9          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+     10          * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+     11          * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+     12          * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+     13          * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     14          *******************************************************************************/
+     15          
+     16          /* Includes ------------------------------------------------------------------*/
+     17          #include "hw_config.h"
+     18          #include "stm32f10x.h"
+     19          #include "usb_lib.h"
+     20          #include "usb_istr.h"
+     21          #include "stm32f10x_gpio.h"
+     22          #include "debug.h"
+     23          
+     24          /* Private typedef -----------------------------------------------------------*/
+     25          /* Private define ------------------------------------------------------------*/
+     26          /* Private macro -------------------------------------------------------------*/
+     27          /* Private variables ---------------------------------------------------------*/
+     28          uint8_t Receive_Buffer[2];
+     29          
+     30          /* Private function prototypes -----------------------------------------------*/
+     31          /* Private functions ---------------------------------------------------------*/
+     32          
+     33          /*******************************************************************************
+     34          * Function Name  : EP1_IN_Callback.
+     35          * Description    : EP1 IN Callback Routine.
+     36          * Input          : None.
+     37          * Output         : None.
+     38          * Return         : None.
+     39          *******************************************************************************/
+     40          void EP1_IN_Callback(void)
+     41          {
+     42              DEBUG_MSG_FUNC_START;
+     43          }
+     44          
+     45          /*******************************************************************************
+     46          * Function Name  : EP1_OUT_Callback.
+     47          * Description    : EP1 OUT Callback Routine.
+     48          * Input          : None.
+     49          * Output         : None.
+     50          * Return         : None.
+     51          *******************************************************************************/
+     52          void EP1_OUT_Callback(void)
+     53          {
+     54              DEBUG_MSG_FUNC_START;
+     55          
+     56              BitAction Led_State;
+     57          
+     58            /* Read recieved data (2 bytes) */  
+     59            USB_SIL_Read(EP1_OUT, Receive_Buffer);
+     60          
+     61              if (Receive_Buffer[1] == 0)
+     62              {
+     63                  Led_State = Bit_SET;
+     64              }
+     65              else 
+     66              {
+     67                  Led_State = Bit_RESET;
+     68              }
+     69          
+     70              switch (Receive_Buffer[0])
+     71              {
+     72              case 1: /* Led 1 */
+     73                  GPIO_WriteBit(GPIO_LED, GPIO_LED1_PIN, Led_State);
+     74                  break;
+     75              case 2: /* Led 2 */
+     76                  GPIO_WriteBit(GPIO_LED, GPIO_LED2_PIN, Led_State);
+     77                  break;
+     78              case 3: /* Led 3 */
+     79                  GPIO_WriteBit(GPIO_LED, GPIO_LED3_PIN, Led_State);
+     80                  break;
+     81              default:
+     82                  GPIO_Write(GPIO_LED,
+     83                             ~(uint16_t)(GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN ));
+     84                  break;
+     85              }
+     86          
+     87          #ifndef STM32F10X_CL   
+     88            SetEPRxStatus(ENDP1, EP_RX_VALID);
+     89          #endif /* STM32F10X_CL */
+     90           
+     91          }
+     92          
+     93          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+     94          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  EP1_IN_Callback
+             8 -> DebugMsg_FunctionStart
+        8  EP1_OUT_Callback
+             8 -> DebugMsg_FunctionStart
+             8 -> GPIO_Write
+             8 -> GPIO_WriteBit
+             8 -> SetEPRxStatus
+             8 -> USB_SIL_Read
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+      10  EP1_IN_Callback
+     120  EP1_OUT_Callback
+       2  Receive_Buffer
+      36  -- Other
+
+ 
+   2 bytes in section .bss
+  36 bytes in section .rodata
+ 146 bytes in section .text
+ 
+ 146 bytes of CODE  memory
+  36 bytes of CONST memory
+   2 bytes of DATA  memory
+
+Errors: none
+Warnings: none

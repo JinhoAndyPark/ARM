@@ -1,0 +1,8 @@
+---- ADCConvertedValue Matches (9 in 3 files) ----
+Hw_config.c (c:\prj\cortex-m3\04. periph_rb\src):UINT ADCConvertedValue[ADCMAXCH]; 
+Hw_config.c (c:\prj\cortex-m3\04. periph_rb\src):    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCConvertedValue;
+Hw_config.c (c:\prj\cortex-m3\04. periph_rb\src):    ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_239Cycles5); //ADCConvertedValue[0]
+Hw_config.c (c:\prj\cortex-m3\04. periph_rb\src):    ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 2, ADC_SampleTime_239Cycles5); //ADCConvertedValue[1]
+Hw_config.c (c:\prj\cortex-m3\04. periph_rb\src):    ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 3, ADC_SampleTime_239Cycles5); //ADCConvertedValue[2]
+Hw_config.h (c:\prj\cortex-m3\04. periph_rb\src):extern UINT ADCConvertedValue[ADCMAXCH];
+Main.c (c:\prj\cortex-m3\04. periph_rb\src):          printf("%05d %05d %05d\n",ADCConvertedValue[0], ADCConvertedValue[1], ADCConvertedValue[2]);

@@ -1,0 +1,255 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:08 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\led.c                                                 #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\led.c -D USE_STDPERIPH_DRIVER -lcN                    #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\led.lst                                #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\led.o                                   #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\led.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : led.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 08/13/2009
+      8           */
+      9          
+     10          /* includes */
+     11          
+     12          #include "hw_config.h"
+     13          
+     14          /* functions */
+     15          
+     16          /*
+     17           * GPIO_LED1_PIN  // RED
+     18           * GPIO_LED2_PIN  // YELLOW
+     19           * GPIO_LED3_PIN  // BLUE
+     20           */
+     21          
+     22          void LED_On_Red (void)
+     23          {
+     24              GPIO_ResetBits(GPIO_LED, GPIO_LED1_PIN);
+     25          }
+     26          
+     27          void LED_Off_Red (void)
+     28          {
+     29              GPIO_SetBits(GPIO_LED, GPIO_LED1_PIN);
+     30          }
+     31          
+     32          void LED_Toggle_Red (void)
+     33          {
+     34              GPIO_WriteBit(GPIO_LED, GPIO_LED1_PIN,
+     35                            (BitAction)(1-GPIO_ReadOutputDataBit(GPIO_LED, GPIO_LED1_PIN)));
+     36          }
+     37          
+     38          void LED_On_Yellow (void)
+     39          {
+     40              GPIO_ResetBits(GPIO_LED, GPIO_LED2_PIN);
+     41          }
+     42          
+     43          void LED_Off_Yellow (void)
+     44          {
+     45              GPIO_SetBits(GPIO_LED, GPIO_LED2_PIN);
+     46          }
+     47          
+     48          void LED_Toggle_Yellow (void)
+     49          {
+     50              GPIO_WriteBit(GPIO_LED, GPIO_LED2_PIN,
+     51                            (BitAction)(1-GPIO_ReadOutputDataBit(GPIO_LED, GPIO_LED2_PIN)));
+     52          }
+     53          
+     54          void LED_On_Blue (void)
+     55          {
+     56              GPIO_ResetBits(GPIO_LED, GPIO_LED3_PIN);
+     57          }
+     58          
+     59          void LED_Off_Blue (void)
+     60          {
+     61              GPIO_SetBits(GPIO_LED, GPIO_LED3_PIN);
+     62          }
+     63          
+     64          void LED_Toggle_Blue (void)
+     65          {
+     66              GPIO_WriteBit(GPIO_LED, GPIO_LED3_PIN,
+     67                            (BitAction)(1-GPIO_ReadOutputDataBit(GPIO_LED, GPIO_LED3_PIN)));
+     68          }
+     69          
+     70          void LED_On_All (void)
+     71          {
+     72              LED_On_Red();
+     73              LED_On_Yellow();
+     74              LED_On_Blue();
+     75          }
+     76          
+     77          void LED_Off_All (void)
+     78          {
+     79              LED_Off_Red();
+     80              LED_Off_Yellow();
+     81              LED_Off_Blue();
+     82          }
+     83          
+     84          void LED_OnOffAll_Mult(uint32_t count)
+     85          {
+     86              for(; count > 0; count --)
+     87              {
+     88                  LED_Off_Red();
+     89                  LED_On_Yellow();
+     90                  LED_On_Blue();
+     91                  delay_1_second();
+     92          
+     93                  LED_On_Red();
+     94                  LED_Off_Yellow();
+     95                  LED_On_Blue();
+     96                  delay_1_second();
+     97          
+     98                  LED_On_Red();
+     99                  LED_On_Yellow();
+    100                  LED_Off_Blue();
+    101                  delay_1_second();
+    102              }
+    103          }
+    104          
+    105          void LED_Initialize(void)
+    106          {
+    107              /******************** Clock Enable ********************/
+    108              /* Enable GPIOB clock */
+    109              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);  
+    110              
+    111              /******************** GPIO configure ********************/
+    112              GPIO_InitTypeDef GPIO_InitStructure;  
+    113            
+    114              /* Configure gpio as output : LED1, LED2, LED3 */
+    115              GPIO_InitStructure.GPIO_Pin   = GPIO_LED1_PIN | GPIO_LED2_PIN | GPIO_LED3_PIN ;
+    116              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    117              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    118              GPIO_Init(GPIO_LED, &GPIO_InitStructure);          
+    119          }
+    120          
+    121          void LED_Test(void)
+    122          {
+    123              LED_On_All();
+    124              delay_1_second();
+    125              LED_Off_All();
+    126              delay_1_second();
+    127          
+    128              LED_OnOffAll_Mult(3);
+    129          }
+    130          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  LED_Initialize
+             8 -> GPIO_Init
+             8 -> RCC_APB2PeriphClockCmd
+        8  LED_Off_All
+             8 -> LED_Off_Blue
+             8 -> LED_Off_Red
+             8 -> LED_Off_Yellow
+        8  LED_Off_Blue
+             8 -> GPIO_SetBits
+        8  LED_Off_Red
+             8 -> GPIO_SetBits
+        8  LED_Off_Yellow
+             8 -> GPIO_SetBits
+        8  LED_OnOffAll_Mult
+             8 -> LED_Off_Blue
+             8 -> LED_Off_Red
+             8 -> LED_Off_Yellow
+             8 -> LED_On_Blue
+             8 -> LED_On_Red
+             8 -> LED_On_Yellow
+             8 -> delay_1_second
+        8  LED_On_All
+             8 -> LED_On_Blue
+             8 -> LED_On_Red
+             8 -> LED_On_Yellow
+        8  LED_On_Blue
+             8 -> GPIO_ResetBits
+        8  LED_On_Red
+             8 -> GPIO_ResetBits
+        8  LED_On_Yellow
+             8 -> GPIO_ResetBits
+        8  LED_Test
+             8 -> LED_Off_All
+             8 -> LED_OnOffAll_Mult
+             8 -> LED_On_All
+             8 -> delay_1_second
+        8  LED_Toggle_Blue
+             8 -> GPIO_ReadOutputDataBit
+             8 -> GPIO_WriteBit
+        8  LED_Toggle_Red
+             8 -> GPIO_ReadOutputDataBit
+             8 -> GPIO_WriteBit
+        8  LED_Toggle_Yellow
+             8 -> GPIO_ReadOutputDataBit
+             8 -> GPIO_WriteBit
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable9
+      40  LED_Initialize
+      16  LED_Off_All
+      14  LED_Off_Blue
+      14  LED_Off_Red
+      12  LED_Off_Yellow
+      62  LED_OnOffAll_Mult
+      16  LED_On_All
+      14  LED_On_Blue
+      14  LED_On_Red
+      12  LED_On_Yellow
+      26  LED_Test
+      30  LED_Toggle_Blue
+      30  LED_Toggle_Red
+      26  LED_Toggle_Yellow
+
+ 
+ 330 bytes in section .text
+ 
+ 330 bytes of CODE memory
+
+Errors: none
+Warnings: none

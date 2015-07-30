@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>WYsteps/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>172</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>663</ColumnWidth1><ColumnWidth2>177</ColumnWidth2><ColumnWidth3>44</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-22604-2001</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>WYsteps</ExpandedNode><ExpandedNode>WYsteps/library</ExpandedNode><ExpandedNode>WYsteps/library/CMSIS</ExpandedNode><ExpandedNode>WYsteps/src</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-12818-4845</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\library\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</Filename><XPos>0</XPos><YPos>75</YPos><SelStart>5158</SelStart><SelEnd>5158</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\library\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</Filename><XPos>0</XPos><YPos>111</YPos><SelStart>6124</SelStart><SelEnd>6124</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\src\stm32f10x_it.c</Filename><XPos>0</XPos><YPos>682</YPos><SelStart>21647</SelStart><SelEnd>21647</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\src\hw_config.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\src\main.c</Filename><XPos>0</XPos><YPos>90</YPos><SelStart>3582</SelStart><SelEnd>3582</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\library\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</Filename><XPos>0</XPos><YPos>1026</YPos><SelStart>34926</SelStart><SelEnd>34926</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\project\stm32f10x_flash.icf</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>306</SelStart><SelEnd>306</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\library\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</Filename><XPos>0</XPos><YPos>114</YPos><SelStart>1127</SelStart><SelEnd>1127</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps\src\hw_config.c</Filename><XPos>0</XPos><YPos>360</YPos><SelStart>13510</SelStart><SelEnd>13510</SelEnd></Tab><ActiveTab>8</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-01d77720><key>iaridepm.enu1</key></Toolbar-01d77720></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>712</Bottom><Right>246</Right><x>-2</x><y>-2</y><xscreen>149</xscreen><yscreen>63</yscreen><sizeHorzCX>-2147483648</sizeHorzCX><sizeHorzCY>-2147483648</sizeHorzCY><sizeVertCX>-2147483648</sizeVertCX><sizeVertCY>-2147483648</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>61</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>63</yscreen><sizeHorzCX>-2147483648</sizeHorzCX><sizeHorzCY>-2147483648</sizeHorzCY><sizeVertCX>-2147483648</sizeVertCX><sizeVertCY>-2147483648</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

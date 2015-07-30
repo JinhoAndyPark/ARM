@@ -1,0 +1,169 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:07 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\debug.c                                               #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\debug.c -D USE_STDPERIPH_DRIVER -lcN                  #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\debug.lst                              #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\debug.o                                 #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\debug.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : main.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 08/12/2009
+      8           */
+      9          
+     10          /* includes */
+     11          
+     12          #include "hw_config.h"
+     13          
+     14          /* functions */
+     15          
+     16          void DebugMsg_FunctionStart(char const * fName_p)
+     17          {
+     18          #ifdef  DEBUG_MSG_LEVEL0
+     19              printf("%s() S\n", fName_p);
+     20          #endif
+     21          }
+     22          
+     23          void DebugMsg_FunctionEnd(char const * fName_p)
+     24          {
+     25          #ifdef  DEBUG_MSG_LEVEL0
+     26              printf("%s() E\n", fName_p);
+     27          #endif
+     28          }
+     29          
+     30          void DebugMsg_FunctionNotify(char const * fName_p, int lineNum)
+     31          {
+     32          #ifdef  DEBUG_MSG_LEVEL0
+     33              printf("%s() %d\n", fName_p, lineNum);
+     34          #endif
+     35          }
+     36          
+     37          void DebugMsg_FunctionError(char const * fName_p, int lineNum)
+     38          {
+     39          #ifdef  DEBUG_MSG_LEVEL0
+     40              printf("[ERROR] %s() %d\n", fName_p, lineNum);
+     41          #endif
+     42          }
+     43          
+     44          #ifdef  USE_FULL_ASSERT
+     45          
+     46          void DebugMsg_Assert(char const * fName_p, int lineNum)
+     47          {
+     48              printf("!!! ASSERT FAILED !!! %s() %d\n", fName_p, lineNum);
+     49          }
+     50          
+     51          /*******************************************************************************
+     52          * Function Name  : assert_failed
+     53          * Description    : Reports the name of the source file and the source line number
+     54            *   where the assert_param error has occurred.
+     55          * Input          : - file: pointer to the source file name
+     56          *                  - line: assert_param error line source number
+     57          * Output         : None
+     58          * Return         : None
+     59          *******************************************************************************/
+     60          void assert_failed(uint8_t* file, uint32_t line)
+     61          { 
+     62            /* User can add his own implementation to report the file name and line number,
+     63               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     64              printf("Wrong parameters value: file %s on line %d\r\n", file, line);
+     65          
+     66            /* Infinite loop */
+     67            while (1)
+     68            {}
+     69          }
+     70          
+     71          #endif
+     72          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       16  DebugMsg_Assert
+             16 -> printf
+        8  DebugMsg_FunctionEnd
+              8 -> printf
+       16  DebugMsg_FunctionError
+             16 -> printf
+       16  DebugMsg_FunctionNotify
+             16 -> printf
+        8  DebugMsg_FunctionStart
+              8 -> printf
+       16  assert_failed
+             16 -> printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      32  ?<Constant "!!! ASSERT FAILED !!!...">
+      12  ?<Constant "%s() %d\n">
+       8  ?<Constant "%s() E\n">
+       8  ?<Constant "%s() S\n">
+      48  ?<Constant "Wrong parameters valu...">
+      20  ?<Constant "[ERROR] %s() %d\n">
+       4  ??DataTable5
+       4  ??DataTable5_1
+       4  ??DataTable5_2
+       4  ??DataTable5_3
+       4  ??DataTable5_4
+       4  ??DataTable5_5
+      18  DebugMsg_Assert
+      14  DebugMsg_FunctionEnd
+      18  DebugMsg_FunctionError
+      18  DebugMsg_FunctionNotify
+      14  DebugMsg_FunctionStart
+      18  assert_failed
+
+ 
+ 128 bytes in section .rodata
+ 124 bytes in section .text
+ 
+ 124 bytes of CODE  memory
+ 128 bytes of CONST memory
+
+Errors: none
+Warnings: none

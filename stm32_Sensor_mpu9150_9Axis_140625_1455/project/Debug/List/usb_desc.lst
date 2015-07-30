@@ -1,0 +1,341 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:06 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_desc.c                                            #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_desc.c -D USE_STDPERIPH_DRIVER -lcN               #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_desc.lst                           #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_desc.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\usb_desc.c
+      1          /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+      2          * File Name          : usb_desc.c
+      3          * Author             : MCD Application Team
+      4          * Version            : V3.2.1
+      5          * Date               : 07/05/2010
+      6          * Description        : Descriptors for Custom HID Demo
+      7          ********************************************************************************
+      8          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+      9          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+     10          * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+     11          * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+     12          * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+     13          * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     14          *******************************************************************************/
+     15          
+     16          /* Includes ------------------------------------------------------------------*/
+     17          #include "usb_lib.h"
+     18          #include "usb_desc.h"
+     19          
+     20          /* Private typedef -----------------------------------------------------------*/
+     21          /* Private define ------------------------------------------------------------*/
+     22          /* Private macro -------------------------------------------------------------*/
+     23          /* Private variables ---------------------------------------------------------*/
+     24          /* Extern variables ----------------------------------------------------------*/
+     25          /* Private function prototypes -----------------------------------------------*/
+     26          /* Private functions ---------------------------------------------------------*/
+     27          
+     28          /* USB Standard Device Descriptor */
+     29          const uint8_t CustomHID_DeviceDescriptor[CUSTOMHID_SIZ_DEVICE_DESC] =
+     30            {
+     31              0x12,                       /*bLength */
+     32              USB_DEVICE_DESCRIPTOR_TYPE, /*bDescriptorType*/
+     33              0x00,                       /*bcdUSB */
+     34              0x02,
+     35              0x00,                       /*bDeviceClass*/
+     36              0x00,                       /*bDeviceSubClass*/
+     37              0x00,                       /*bDeviceProtocol*/
+     38              0x40,                       /*bMaxPacketSize40*/
+     39              0x83,                       /*idVendor (0x0483)*/
+     40              0x04,
+     41              0x50,                       /*idProduct = 0x5750*/
+     42              0x57,
+     43              0x00,                       /*bcdDevice rel. 2.00*/
+     44              0x02,
+     45              1,                          /*Index of string descriptor describing
+     46                                                        manufacturer */
+     47              2,                          /*Index of string descriptor describing
+     48                                                       product*/
+     49              3,                          /*Index of string descriptor describing the
+     50                                                       device serial number */
+     51              0x01                        /*bNumConfigurations*/
+     52            }
+     53            ; /* CustomHID_DeviceDescriptor */
+     54          
+     55          
+     56          /* USB Configuration Descriptor */
+     57          /*   All Descriptors (Configuration, Interface, Endpoint, Class, Vendor */
+     58          const uint8_t CustomHID_ConfigDescriptor[CUSTOMHID_SIZ_CONFIG_DESC] =
+     59            {
+     60              0x09, /* bLength: Configuation Descriptor size */
+     61              USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType: Configuration */
+     62              CUSTOMHID_SIZ_CONFIG_DESC,
+     63              /* wTotalLength: Bytes returned */
+     64              0x00,
+     65              0x01,         /* bNumInterfaces: 1 interface */
+     66              0x01,         /* bConfigurationValue: Configuration value */
+     67              0x00,         /* iConfiguration: Index of string descriptor describing
+     68                                           the configuration*/
+     69              0xC0,         /* bmAttributes: Bus powered */
+     70              0x32,         /* MaxPower 100 mA: this current is used for detecting Vbus */
+     71          
+     72              /************** Descriptor of Custom HID interface ****************/
+     73              /* 09 */
+     74              0x09,         /* bLength: Interface Descriptor size */
+     75              USB_INTERFACE_DESCRIPTOR_TYPE,/* bDescriptorType: Interface descriptor type */
+     76              0x00,         /* bInterfaceNumber: Number of Interface */
+     77              0x00,         /* bAlternateSetting: Alternate setting */
+     78              0x02,         /* bNumEndpoints */
+     79              0x03,         /* bInterfaceClass: HID */
+     80              0x00,         /* bInterfaceSubClass : 1=BOOT, 0=no boot */
+     81              0x00,         /* nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse */
+     82              0,            /* iInterface: Index of string descriptor */
+     83              /******************** Descriptor of Custom HID HID ********************/
+     84              /* 18 */
+     85              0x09,         /* bLength: HID Descriptor size */
+     86              HID_DESCRIPTOR_TYPE, /* bDescriptorType: HID */
+     87              0x10,         /* bcdHID: HID Class Spec release number */
+     88              0x01,
+     89              0x00,         /* bCountryCode: Hardware target country */
+     90              0x01,         /* bNumDescriptors: Number of HID class descriptors to follow */
+     91              0x22,         /* bDescriptorType */
+     92              CUSTOMHID_SIZ_REPORT_DESC,/* wItemLength: Total length of Report descriptor */
+     93              0x00,
+     94              /******************** Descriptor of Custom HID endpoints ******************/
+     95              /* 27 */
+     96              0x07,          /* bLength: Endpoint Descriptor size */
+     97              USB_ENDPOINT_DESCRIPTOR_TYPE, /* bDescriptorType: */
+     98          
+     99              0x81,          /* bEndpointAddress: Endpoint Address (IN) */
+    100              0x03,          /* bmAttributes: Interrupt endpoint */
+    101              0x02,          /* wMaxPacketSize: 2 Bytes max */
+    102              0x00,
+    103              0x20,          /* bInterval: Polling Interval (32 ms) */
+    104              /* 34 */
+    105              	
+    106              0x07,	/* bLength: Endpoint Descriptor size */
+    107              USB_ENDPOINT_DESCRIPTOR_TYPE,	/* bDescriptorType: */
+    108          			/*	Endpoint descriptor type */
+    109              0x01,	/* bEndpointAddress: */
+    110          			/*	Endpoint Address (OUT) */
+    111              0x03,	/* bmAttributes: Interrupt endpoint */
+    112              0x02,	/* wMaxPacketSize: 2 Bytes max  */
+    113              0x00,
+    114              0x20,	/* bInterval: Polling Interval (20 ms) */
+    115              /* 41 */
+    116            }
+    117            ; /* CustomHID_ConfigDescriptor */
+    118          const uint8_t CustomHID_ReportDescriptor[CUSTOMHID_SIZ_REPORT_DESC] =
+    119            {                    
+    120              0x06, 0xFF, 0x00,      /* USAGE_PAGE (Vendor Page: 0xFF00) */                       
+    121              0x09, 0x01,            /* USAGE (Demo Kit)               */    
+    122              0xa1, 0x01,            /* COLLECTION (Application)       */            
+    123              /* 6 */
+    124              
+    125              /* Led 1 */        
+    126              0x85, 0x01,            /*     REPORT_ID (1)		     */
+    127              0x09, 0x01,            /*     USAGE (LED 1)	             */
+    128              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */          
+    129              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */           
+    130              0x75, 0x08,            /*     REPORT_SIZE (8)            */        
+    131              0x95, 0x01,            /*     REPORT_COUNT (1)           */       
+    132              0xB1, 0x82,             /*    FEATURE (Data,Var,Abs,Vol) */     
+    133          
+    134              0x85, 0x01,            /*     REPORT_ID (1)              */
+    135              0x09, 0x01,            /*     USAGE (LED 1)              */
+    136              0x91, 0x82,            /*     OUTPUT (Data,Var,Abs,Vol)  */
+    137              /* 26 */
+    138              
+    139              /* Led 2 */
+    140              0x85, 0x02,            /*     REPORT_ID 2		     */
+    141              0x09, 0x02,            /*     USAGE (LED 2)	             */
+    142              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */          
+    143              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */           
+    144              0x75, 0x08,            /*     REPORT_SIZE (8)            */        
+    145              0x95, 0x01,            /*     REPORT_COUNT (1)           */       
+    146              0xB1, 0x82,             /*    FEATURE (Data,Var,Abs,Vol) */     
+    147          
+    148              0x85, 0x02,            /*     REPORT_ID (2)              */
+    149              0x09, 0x02,            /*     USAGE (LED 2)              */
+    150              0x91, 0x82,            /*     OUTPUT (Data,Var,Abs,Vol)  */
+    151              /* 46 */
+    152              
+    153              /* Led 3 */        
+    154              0x85, 0x03,            /*     REPORT_ID (3)		     */
+    155              0x09, 0x03,            /*     USAGE (LED 3)	             */
+    156              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */          
+    157              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */           
+    158              0x75, 0x08,            /*     REPORT_SIZE (8)            */        
+    159              0x95, 0x01,            /*     REPORT_COUNT (1)           */       
+    160              0xB1, 0x82,             /*    FEATURE (Data,Var,Abs,Vol) */     
+    161          
+    162              0x85, 0x03,            /*     REPORT_ID (3)              */
+    163              0x09, 0x03,            /*     USAGE (LED 3)              */
+    164              0x91, 0x82,            /*     OUTPUT (Data,Var,Abs,Vol)  */
+    165              /* 66 */
+    166              
+    167              /* Led 4 */
+    168              0x85, 0x04,            /*     REPORT_ID 4)		     */
+    169              0x09, 0x04,            /*     USAGE (LED 4)	             */
+    170              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */          
+    171              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */           
+    172              0x75, 0x08,            /*     REPORT_SIZE (8)            */        
+    173              0x95, 0x01,            /*     REPORT_COUNT (1)           */       
+    174              0xB1, 0x82,            /*     FEATURE (Data,Var,Abs,Vol) */     
+    175          
+    176              0x85, 0x04,            /*     REPORT_ID (4)              */
+    177              0x09, 0x04,            /*     USAGE (LED 4)              */
+    178              0x91, 0x82,            /*     OUTPUT (Data,Var,Abs,Vol)  */
+    179              /* 86 */
+    180              
+    181              /* key Push Button */  
+    182              0x85, 0x05,            /*     REPORT_ID (5)              */
+    183              0x09, 0x05,            /*     USAGE (Push Button)        */      
+    184              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */      
+    185              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */      
+    186              0x75, 0x01,            /*     REPORT_SIZE (1)            */  
+    187              0x81, 0x82,            /*     INPUT (Data,Var,Abs,Vol)   */   
+    188              
+    189              0x09, 0x05,            /*     USAGE (Push Button)        */               
+    190              0x75, 0x01,            /*     REPORT_SIZE (1)            */           
+    191              0xb1, 0x82,            /*     FEATURE (Data,Var,Abs,Vol) */  
+    192                   
+    193              0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    194              0x81, 0x83,            /*     INPUT (Cnst,Var,Abs,Vol)   */                    
+    195              0x85, 0x05,            /*     REPORT_ID (2)              */         
+    196                              
+    197              0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    198              0xb1, 0x83,            /*     FEATURE (Cnst,Var,Abs,Vol) */                      
+    199              /* 114 */
+    200          
+    201              /* Tamper Push Button */  
+    202              0x85, 0x06,            /*     REPORT_ID (6)              */
+    203              0x09, 0x06,            /*     USAGE (Tamper Push Button) */      
+    204              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */      
+    205              0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */      
+    206              0x75, 0x01,            /*     REPORT_SIZE (1)            */  
+    207              0x81, 0x82,            /*     INPUT (Data,Var,Abs,Vol)   */   
+    208              
+    209              0x09, 0x06,            /*     USAGE (Tamper Push Button) */               
+    210              0x75, 0x01,            /*     REPORT_SIZE (1)            */           
+    211              0xb1, 0x82,            /*     FEATURE (Data,Var,Abs,Vol) */  
+    212                   
+    213              0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    214              0x81, 0x83,            /*     INPUT (Cnst,Var,Abs,Vol)   */                    
+    215              0x85, 0x06,            /*     REPORT_ID (6)              */         
+    216                              
+    217              0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    218              0xb1, 0x83,            /*     FEATURE (Cnst,Var,Abs,Vol) */  
+    219              /* 142 */
+    220              
+    221              /* ADC IN */
+    222              0x85, 0x07,            /*     REPORT_ID (7)              */         
+    223              0x09, 0x07,            /*     USAGE (ADC IN)             */          
+    224              0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */               
+    225              0x26, 0xff, 0x00,      /*     LOGICAL_MAXIMUM (255)      */                 
+    226              0x75, 0x08,            /*     REPORT_SIZE (8)            */           
+    227              0x81, 0x82,            /*     INPUT (Data,Var,Abs,Vol)   */                    
+    228              0x85, 0x07,            /*     REPORT_ID (7)              */                 
+    229              0x09, 0x07,            /*     USAGE (ADC in)             */                     
+    230              0xb1, 0x82,            /*     FEATURE (Data,Var,Abs,Vol) */                                 
+    231              /* 161 */
+    232          
+    233              0xc0 	          /*     END_COLLECTION	             */
+    234            }; /* CustomHID_ReportDescriptor */
+    235          
+    236          /* USB String Descriptors (optional) */
+    237          const uint8_t CustomHID_StringLangID[CUSTOMHID_SIZ_STRING_LANGID] =
+    238            {
+    239              CUSTOMHID_SIZ_STRING_LANGID,
+    240              USB_STRING_DESCRIPTOR_TYPE,
+    241              0x09,
+    242              0x04
+    243            }
+    244            ; /* LangID = 0x0409: U.S. English */
+    245          
+    246          const uint8_t CustomHID_StringVendor[CUSTOMHID_SIZ_STRING_VENDOR] =
+    247            {
+    248              CUSTOMHID_SIZ_STRING_VENDOR, /* Size of Vendor string */
+    249              USB_STRING_DESCRIPTOR_TYPE,  /* bDescriptorType*/
+    250              /* Manufacturer: "STMicroelectronics" */
+    251              'S', 0, 'T', 0, 'M', 0, 'i', 0, 'c', 0, 'r', 0, 'o', 0, 'e', 0,
+    252              'l', 0, 'e', 0, 'c', 0, 't', 0, 'r', 0, 'o', 0, 'n', 0, 'i', 0,
+    253              'c', 0, 's', 0
+    254            };
+    255          
+    256          const uint8_t CustomHID_StringProduct[CUSTOMHID_SIZ_STRING_PRODUCT] =
+    257            {
+    258              CUSTOMHID_SIZ_STRING_PRODUCT,          /* bLength */
+    259              USB_STRING_DESCRIPTOR_TYPE,        /* bDescriptorType */
+    260              'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0, ' ', 0, 'C', 0,
+    261              'u', 0, 's', 0, 't', 0, 'm', 0, ' ', 0, 'H', 0, 'I', 0,
+    262              'D', 0
+    263            };
+    264          uint8_t CustomHID_StringSerial[CUSTOMHID_SIZ_STRING_SERIAL] =
+    265            {
+    266              CUSTOMHID_SIZ_STRING_SERIAL,           /* bLength */
+    267              USB_STRING_DESCRIPTOR_TYPE,        /* bDescriptorType */
+    268              'S', 0, 'T', 0, 'M', 0,'3', 0,'2', 0, '1', 0, '0', 0
+    269            };
+    270          
+    271          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+    272          
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      44  CustomHID_ConfigDescriptor
+      20  CustomHID_DeviceDescriptor
+     164  CustomHID_ReportDescriptor
+       4  CustomHID_StringLangID
+      32  CustomHID_StringProduct
+      28  CustomHID_StringSerial
+      40  CustomHID_StringVendor
+
+ 
+  28 bytes in section .data
+ 304 bytes in section .rodata
+ 
+ 304 bytes of CONST memory
+  28 bytes of DATA  memory
+
+Errors: none
+Warnings: none

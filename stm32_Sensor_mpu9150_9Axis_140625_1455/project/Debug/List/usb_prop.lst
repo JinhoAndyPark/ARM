@@ -1,0 +1,570 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_prop.c                                            #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_prop.c -D USE_STDPERIPH_DRIVER -lcN               #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_prop.lst                           #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_prop.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\usb_prop.c
+      1          /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+      2          * File Name          : usb_prop.c
+      3          * Author             : MCD Application Team
+      4          * Version            : V3.2.1
+      5          * Date               : 07/05/2010
+      6          * Description        : All processings related to Custom HID Demo
+      7          ********************************************************************************
+      8          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+      9          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+     10          * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+     11          * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+     12          * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+     13          * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     14          *******************************************************************************/
+     15          
+     16          /* Includes ------------------------------------------------------------------*/
+     17          #include "stm32f10x.h"
+     18          #include "usb_lib.h"
+     19          #include "usb_conf.h"
+     20          #include "usb_prop.h"
+     21          #include "usb_desc.h"
+     22          #include "usb_pwr.h"
+     23          #include "hw_config.h"
+     24          
+     25          /* Private typedef -----------------------------------------------------------*/
+     26          /* Private define ------------------------------------------------------------*/
+     27          /* Private macro -------------------------------------------------------------*/
+     28          /* Private variables ---------------------------------------------------------*/
+     29          uint32_t ProtocolValue;
+     30          __IO uint8_t EXTI_Enable;
+     31          
+     32          /* -------------------------------------------------------------------------- */
+     33          /*  Structures initializations */
+     34          /* -------------------------------------------------------------------------- */
+     35          
+     36          DEVICE Device_Table =
+     37            {
+     38              EP_NUM,
+     39              1
+     40            };
+     41          
+     42          DEVICE_PROP Device_Property =
+     43            {
+     44              CustomHID_init,
+     45              CustomHID_Reset,
+     46              CustomHID_Status_In,
+     47              CustomHID_Status_Out,
+     48              CustomHID_Data_Setup,
+     49              CustomHID_NoData_Setup,
+     50              CustomHID_Get_Interface_Setting,
+     51              CustomHID_GetDeviceDescriptor,
+     52              CustomHID_GetConfigDescriptor,
+     53              CustomHID_GetStringDescriptor,
+     54              0,
+     55              0x40 /*MAX PACKET SIZE*/
+     56            };
+     57          USER_STANDARD_REQUESTS User_Standard_Requests =
+     58            {
+     59              CustomHID_GetConfiguration,
+     60              CustomHID_SetConfiguration,
+     61              CustomHID_GetInterface,
+     62              CustomHID_SetInterface,
+     63              CustomHID_GetStatus,
+     64              CustomHID_ClearFeature,
+     65              CustomHID_SetEndPointFeature,
+     66              CustomHID_SetDeviceFeature,
+     67              CustomHID_SetDeviceAddress
+     68            };
+     69          
+     70          ONE_DESCRIPTOR Device_Descriptor =
+     71            {
+     72              (uint8_t*)CustomHID_DeviceDescriptor,
+     73              CUSTOMHID_SIZ_DEVICE_DESC
+     74            };
+     75          
+     76          ONE_DESCRIPTOR Config_Descriptor =
+     77            {
+     78              (uint8_t*)CustomHID_ConfigDescriptor,
+     79              CUSTOMHID_SIZ_CONFIG_DESC
+     80            };
+     81          
+     82          ONE_DESCRIPTOR CustomHID_Report_Descriptor =
+     83            {
+     84              (uint8_t *)CustomHID_ReportDescriptor,
+     85              CUSTOMHID_SIZ_REPORT_DESC
+     86            };
+     87          
+     88          ONE_DESCRIPTOR CustomHID_Hid_Descriptor =
+     89            {
+     90              (uint8_t*)CustomHID_ConfigDescriptor + CUSTOMHID_OFF_HID_DESC,
+     91              CUSTOMHID_SIZ_HID_DESC
+     92            };
+     93          
+     94          ONE_DESCRIPTOR String_Descriptor[4] =
+     95            {
+     96              {(uint8_t*)CustomHID_StringLangID, CUSTOMHID_SIZ_STRING_LANGID},
+     97              {(uint8_t*)CustomHID_StringVendor, CUSTOMHID_SIZ_STRING_VENDOR},
+     98              {(uint8_t*)CustomHID_StringProduct, CUSTOMHID_SIZ_STRING_PRODUCT},
+     99              {(uint8_t*)CustomHID_StringSerial, CUSTOMHID_SIZ_STRING_SERIAL}
+    100            };
+    101          
+    102          /* Extern variables ----------------------------------------------------------*/
+    103          /* Private function prototypes -----------------------------------------------*/
+    104          /* Extern function prototypes ------------------------------------------------*/
+    105          /* Private functions ---------------------------------------------------------*/
+    106          
+    107          /*******************************************************************************
+    108          * Function Name  : CustomHID_init.
+    109          * Description    : Custom HID init routine.
+    110          * Input          : None.
+    111          * Output         : None.
+    112          * Return         : None.
+    113          *******************************************************************************/
+    114          void Get_SerialNum(void);
+    115          
+    116          void CustomHID_init(void)
+    117          {
+    118            /* Update the serial number string descriptor with the data from the unique 
+    119            ID*/
+    120            Get_SerialNum();
+    121              
+    122            pInformation->Current_Configuration = 0;
+    123            /* Connect the device */
+    124            PowerOn();
+    125          
+    126            /* Perform basic device initialization operations */
+    127            USB_SIL_Init();
+    128          
+    129            bDeviceState = UNCONNECTED;
+    130          }
+    131          
+    132          /*******************************************************************************
+    133          * Function Name  : CustomHID_Reset.
+    134          * Description    : Custom HID reset routine.
+    135          * Input          : None.
+    136          * Output         : None.
+    137          * Return         : None.
+    138          *******************************************************************************/
+    139          void CustomHID_Reset(void)
+    140          {
+    141            /* Set Joystick_DEVICE as not configured */
+    142            pInformation->Current_Configuration = 0;
+    143            pInformation->Current_Interface = 0;/*the default Interface*/
+    144            
+    145            /* Current Feature initialization */
+    146            pInformation->Current_Feature = CustomHID_ConfigDescriptor[7];
+    147            
+    148          #ifdef STM32F10X_CL   
+    149            /* EP0 is already configured in DFU_Init() by USB_SIL_Init() function */
+    150            
+    151            /* Init EP1 IN as Interrupt endpoint */
+    152            OTG_DEV_EP_Init(EP1_IN, OTG_DEV_EP_TYPE_INT, 2);
+    153            
+    154            /* Init EP1 OUT as Interrupt endpoint */
+    155            OTG_DEV_EP_Init(EP1_OUT, OTG_DEV_EP_TYPE_INT, 2);
+    156          #else 
+    157            SetBTABLE(BTABLE_ADDRESS);
+    158          
+    159            /* Initialize Endpoint 0 */
+    160            SetEPType(ENDP0, EP_CONTROL);
+    161            SetEPTxStatus(ENDP0, EP_TX_STALL);
+    162            SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+    163            SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+    164            Clear_Status_Out(ENDP0);
+    165            SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+    166            SetEPRxValid(ENDP0);
+    167          
+    168            /* Initialize Endpoint 1 */
+    169            SetEPType(ENDP1, EP_INTERRUPT);
+    170            SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+    171            SetEPRxAddr(ENDP1, ENDP1_RXADDR);
+    172            SetEPTxCount(ENDP1, 2);
+    173            SetEPRxCount(ENDP1, 2);
+    174            SetEPRxStatus(ENDP1, EP_RX_VALID);
+    175            SetEPTxStatus(ENDP1, EP_TX_NAK);
+    176          
+    177            /* Set this device to response on default address */
+    178            SetDeviceAddress(0);
+    179          #endif /* STM32F10X_CL */
+    180          
+    181            bDeviceState = ATTACHED;
+    182          }
+    183          /*******************************************************************************
+    184          * Function Name  : CustomHID_SetConfiguration.
+    185          * Description    : Udpade the device state to configured and command the ADC 
+    186          *                  conversion.
+    187          * Input          : None.
+    188          * Output         : None.
+    189          * Return         : None.
+    190          *******************************************************************************/
+    191          void CustomHID_SetConfiguration(void)
+    192          {
+    193            if (pInformation->Current_Configuration != 0)
+    194            {
+    195              /* Device configured */
+    196              bDeviceState = CONFIGURED;
+    197              
+    198              /* Start ADC1 Software Conversion */ 
+    199              ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    200            }
+    201          }
+    202          /*******************************************************************************
+    203          * Function Name  : CustomHID_SetConfiguration.
+    204          * Description    : Udpade the device state to addressed.
+    205          * Input          : None.
+    206          * Output         : None.
+    207          * Return         : None.
+    208          *******************************************************************************/
+    209          void CustomHID_SetDeviceAddress (void)
+    210          {
+    211            bDeviceState = ADDRESSED;
+    212          }
+    213          /*******************************************************************************
+    214          * Function Name  : CustomHID_Status_In.
+    215          * Description    : Joystick status IN routine.
+    216          * Input          : None.
+    217          * Output         : None.
+    218          * Return         : None.
+    219          *******************************************************************************/
+    220          void CustomHID_Status_In(void)
+    221          {
+    222          }
+    223          
+    224          /*******************************************************************************
+    225          * Function Name  : CustomHID_Status_Out
+    226          * Description    : Joystick status OUT routine.
+    227          * Input          : None.
+    228          * Output         : None.
+    229          * Return         : None.
+    230          *******************************************************************************/
+    231          void CustomHID_Status_Out (void)
+    232          {
+    233          }
+    234          
+    235          /*******************************************************************************
+    236          * Function Name  : CustomHID_Data_Setup
+    237          * Description    : Handle the data class specific requests.
+    238          * Input          : Request Nb.
+    239          * Output         : None.
+    240          * Return         : USB_UNSUPPORT or USB_SUCCESS.
+    241          *******************************************************************************/
+    242          RESULT CustomHID_Data_Setup(uint8_t RequestNo)
+    243          {
+    244            uint8_t *(*CopyRoutine)(uint16_t);
+    245          
+    246            CopyRoutine = NULL;
+    247          
+    248            if ((RequestNo == GET_DESCRIPTOR)
+    249                && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
+    250                && (pInformation->USBwIndex0 == 0))
+    251            {
+    252          
+    253              if (pInformation->USBwValue1 == REPORT_DESCRIPTOR)
+    254              {
+    255                CopyRoutine = CustomHID_GetReportDescriptor;
+    256              }
+    257              else if (pInformation->USBwValue1 == HID_DESCRIPTOR_TYPE)
+    258              {
+    259                CopyRoutine = CustomHID_GetHIDDescriptor;
+    260              }
+    261          
+    262            } /* End of GET_DESCRIPTOR */
+    263          
+    264            /*** GET_PROTOCOL ***/
+    265            else if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+    266                     && RequestNo == GET_PROTOCOL)
+    267            {
+    268              CopyRoutine = CustomHID_GetProtocolValue;
+    269            }
+    270          
+    271            if (CopyRoutine == NULL)
+    272            {
+    273              return USB_UNSUPPORT;
+    274            }
+    275          
+    276            pInformation->Ctrl_Info.CopyData = CopyRoutine;
+    277            pInformation->Ctrl_Info.Usb_wOffset = 0;
+    278            (*CopyRoutine)(0);
+    279            return USB_SUCCESS;
+    280          }
+    281          
+    282          /*******************************************************************************
+    283          * Function Name  : CustomHID_NoData_Setup
+    284          * Description    : handle the no data class specific requests
+    285          * Input          : Request Nb.
+    286          * Output         : None.
+    287          * Return         : USB_UNSUPPORT or USB_SUCCESS.
+    288          *******************************************************************************/
+    289          RESULT CustomHID_NoData_Setup(uint8_t RequestNo)
+    290          {
+    291            if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+    292                && (RequestNo == SET_PROTOCOL))
+    293            {
+    294              return CustomHID_SetProtocol();
+    295            }
+    296          
+    297            else
+    298            {
+    299              return USB_UNSUPPORT;
+    300            }
+    301          }
+    302          
+    303          /*******************************************************************************
+    304          * Function Name  : CustomHID_GetDeviceDescriptor.
+    305          * Description    : Gets the device descriptor.
+    306          * Input          : Length
+    307          * Output         : None.
+    308          * Return         : The address of the device descriptor.
+    309          *******************************************************************************/
+    310          uint8_t *CustomHID_GetDeviceDescriptor(uint16_t Length)
+    311          {
+    312            return Standard_GetDescriptorData(Length, &Device_Descriptor);
+    313          }
+    314          
+    315          /*******************************************************************************
+    316          * Function Name  : CustomHID_GetConfigDescriptor.
+    317          * Description    : Gets the configuration descriptor.
+    318          * Input          : Length
+    319          * Output         : None.
+    320          * Return         : The address of the configuration descriptor.
+    321          *******************************************************************************/
+    322          uint8_t *CustomHID_GetConfigDescriptor(uint16_t Length)
+    323          {
+    324            return Standard_GetDescriptorData(Length, &Config_Descriptor);
+    325          }
+    326          
+    327          /*******************************************************************************
+    328          * Function Name  : CustomHID_GetStringDescriptor
+    329          * Description    : Gets the string descriptors according to the needed index
+    330          * Input          : Length
+    331          * Output         : None.
+    332          * Return         : The address of the string descriptors.
+    333          *******************************************************************************/
+    334          uint8_t *CustomHID_GetStringDescriptor(uint16_t Length)
+    335          {
+    336            uint8_t wValue0 = pInformation->USBwValue0;
+    337            if (wValue0 > 4)
+    338            {
+    339              return NULL;
+    340            }
+    341            else 
+    342            {
+    343              return Standard_GetDescriptorData(Length, &String_Descriptor[wValue0]);
+    344            }
+    345          }
+    346          
+    347          /*******************************************************************************
+    348          * Function Name  : CustomHID_GetReportDescriptor.
+    349          * Description    : Gets the HID report descriptor.
+    350          * Input          : Length
+    351          * Output         : None.
+    352          * Return         : The address of the configuration descriptor.
+    353          *******************************************************************************/
+    354          uint8_t *CustomHID_GetReportDescriptor(uint16_t Length)
+    355          {
+    356            return Standard_GetDescriptorData(Length, &CustomHID_Report_Descriptor);
+    357          }
+    358          
+    359          /*******************************************************************************
+    360          * Function Name  : CustomHID_GetHIDDescriptor.
+    361          * Description    : Gets the HID descriptor.
+    362          * Input          : Length
+    363          * Output         : None.
+    364          * Return         : The address of the configuration descriptor.
+    365          *******************************************************************************/
+    366          uint8_t *CustomHID_GetHIDDescriptor(uint16_t Length)
+    367          {
+    368            return Standard_GetDescriptorData(Length, &CustomHID_Hid_Descriptor);
+    369          }
+    370          
+    371          /*******************************************************************************
+    372          * Function Name  : CustomHID_Get_Interface_Setting.
+    373          * Description    : tests the interface and the alternate setting according to the
+    374          *                  supported one.
+    375          * Input          : - Interface : interface number.
+    376          *                  - AlternateSetting : Alternate Setting number.
+    377          * Output         : None.
+    378          * Return         : USB_SUCCESS or USB_UNSUPPORT.
+    379          *******************************************************************************/
+    380          RESULT CustomHID_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
+    381          {
+    382            if (AlternateSetting > 0)
+    383            {
+    384              return USB_UNSUPPORT;
+    385            }
+    386            else if (Interface > 0)
+    387            {
+    388              return USB_UNSUPPORT;
+    389            }
+    390            return USB_SUCCESS;
+    391          }
+    392          
+    393          /*******************************************************************************
+    394          * Function Name  : CustomHID_SetProtocol
+    395          * Description    : Joystick Set Protocol request routine.
+    396          * Input          : None.
+    397          * Output         : None.
+    398          * Return         : USB SUCCESS.
+    399          *******************************************************************************/
+    400          RESULT CustomHID_SetProtocol(void)
+    401          {
+    402            uint8_t wValue0 = pInformation->USBwValue0;
+    403            ProtocolValue = wValue0;
+    404            return USB_SUCCESS;
+    405          }
+    406          
+    407          /*******************************************************************************
+    408          * Function Name  : CustomHID_GetProtocolValue
+    409          * Description    : get the protocol value
+    410          * Input          : Length.
+    411          * Output         : None.
+    412          * Return         : address of the protcol value.
+    413          *******************************************************************************/
+    414          uint8_t *CustomHID_GetProtocolValue(uint16_t Length)
+    415          {
+    416            if (Length == 0)
+    417            {
+    418              pInformation->Ctrl_Info.Usb_wLength = 1;
+    419              return NULL;
+    420            }
+    421            else
+    422            {
+    423              return (uint8_t *)(&ProtocolValue);
+    424            }
+    425          }
+    426          
+    427          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       16  CustomHID_Data_Setup
+             16 -- Indirect call
+        8  CustomHID_GetConfigDescriptor
+              8 -> Standard_GetDescriptorData
+        8  CustomHID_GetDeviceDescriptor
+              8 -> Standard_GetDescriptorData
+        8  CustomHID_GetHIDDescriptor
+              8 -> Standard_GetDescriptorData
+        0  CustomHID_GetProtocolValue
+        8  CustomHID_GetReportDescriptor
+              8 -> Standard_GetDescriptorData
+       16  CustomHID_GetStringDescriptor
+             16 -> Standard_GetDescriptorData
+        0  CustomHID_Get_Interface_Setting
+        8  CustomHID_NoData_Setup
+              8 -> CustomHID_SetProtocol
+        8  CustomHID_Reset
+              8 -> Clear_Status_Out
+              8 -> SetBTABLE
+              8 -> SetDeviceAddress
+              8 -> SetEPRxAddr
+              8 -> SetEPRxCount
+              8 -> SetEPRxStatus
+              8 -> SetEPRxValid
+              8 -> SetEPTxAddr
+              8 -> SetEPTxCount
+              8 -> SetEPTxStatus
+              8 -> SetEPType
+        8  CustomHID_SetConfiguration
+              8 -> ADC_SoftwareStartConvCmd
+        0  CustomHID_SetDeviceAddress
+        0  CustomHID_SetProtocol
+        0  CustomHID_Status_In
+        0  CustomHID_Status_Out
+        8  CustomHID_init
+              8 -> Get_SerialNum
+              8 -> PowerOn
+              8 -> USB_SIL_Init
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable12
+       4  ??DataTable12_1
+       4  ??DataTable12_10
+       4  ??DataTable12_2
+       4  ??DataTable12_3
+       4  ??DataTable12_4
+       4  ??DataTable12_5
+       4  ??DataTable12_6
+       4  ??DataTable12_7
+       4  ??DataTable12_8
+       4  ??DataTable12_9
+       8  Config_Descriptor
+     132  CustomHID_Data_Setup
+      16  CustomHID_GetConfigDescriptor
+      16  CustomHID_GetDeviceDescriptor
+      16  CustomHID_GetHIDDescriptor
+      24  CustomHID_GetProtocolValue
+      16  CustomHID_GetReportDescriptor
+      38  CustomHID_GetStringDescriptor
+      26  CustomHID_Get_Interface_Setting
+       8  CustomHID_Hid_Descriptor
+      34  CustomHID_NoData_Setup
+       8  CustomHID_Report_Descriptor
+     172  CustomHID_Reset
+      28  CustomHID_SetConfiguration
+       8  CustomHID_SetDeviceAddress
+      16  CustomHID_SetProtocol
+       2  CustomHID_Status_In
+       2  CustomHID_Status_Out
+      30  CustomHID_init
+       8  Device_Descriptor
+      48  Device_Property
+       4  Device_Table
+       1  EXTI_Enable
+       4  ProtocolValue
+      32  String_Descriptor
+      36  User_Standard_Requests
+
+ 
+   5 bytes in section .bss
+ 152 bytes in section .data
+ 620 bytes in section .text
+ 
+ 620 bytes of CODE memory
+ 157 bytes of DATA memory
+
+Errors: none
+Warnings: none

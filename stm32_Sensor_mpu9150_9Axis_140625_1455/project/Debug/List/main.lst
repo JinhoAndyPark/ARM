@@ -1,0 +1,457 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:08 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\main.c                                                #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\main.c -D USE_STDPERIPH_DRIVER -lcN                   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\main.lst                               #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\main.o                                  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\main.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : main.c
+      5           * 
+      6           * History 
+      7           *
+      8           * when         who       what, where, why
+      9           *--------------------------------------------------------------
+     10           * 08/12/2009   POOH      Initial release
+     11           * 05/20/2013   sikim     Modify for Humidity sensor
+     12           */
+     13          
+     14          /* includes */
+     15          
+     16          #include "hw_config.h"
+     17          #include "hw_types.h"
+     18          #include "uart_queue.h"
+     19          #include "usb_lib.h"
+     20          #include "usb_pwr.h"
+     21          #include "usb_istr.h"
+     22          #include "usb_desc.h"
+     23          
+     24          /* global variables */
+     25          
+     26          RCC_ClocksTypeDef  rcc_clocks;
+     27          
+     28          bool g_TestProcessState = FALSE;
+     29          
+     30          /* functions */
+     31          
+     32          void System_Information()
+     33          {
+     34              printf("\nProgram Build Date: %s, Time: %s\n", __DATE__, __TIME__);
+     35          
+     36              printf("SYSCLK_Frequency = %d\n",rcc_clocks.SYSCLK_Frequency );
+     37              printf("HCLK_Frequency = %d\n",rcc_clocks.HCLK_Frequency );
+     38              printf("PCLK1_Frequency = %d\n",rcc_clocks.PCLK1_Frequency );
+     39              printf("PCLK2_Frequency = %d\n",rcc_clocks.PCLK2_Frequency );
+     40              printf("ADCCLK_Frequency = %d\n",rcc_clocks.ADCCLK_Frequency );
+     41          }
+     42          
+     43          void USB_Test_Start (void)
+     44          {
+     45              USB_Interrupts_Config();
+     46              Set_USBClock();
+     47              USB_Init();
+     48          }
+     49          
+     50          #if 0
+     51          /**
+     52            * @brief  Configures the used Timers.
+     53            * @param  None
+     54            * @retval None
+     55            */
+     56          void TIM_Configuration(void)
+     57          {
+     58              TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+     59          
+     60              /* TIM2 configuration */
+     61              TIM_TimeBaseStructure.TIM_Period = 0x4AF;          
+     62              TIM_TimeBaseStructure.TIM_Prescaler = 0xEA5F;       
+     63              TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;    
+     64              TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
+     65              TIM_TimeBaseStructure.TIM_RepetitionCounter = 0x0000;
+     66              TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+     67          
+     68              /* TIM2 enable counter */
+     69              TIM_Cmd(TIM2, ENABLE);
+     70          
+     71              /* Immediate load of TIM2 Precaler value */
+     72              TIM_PrescalerConfig(TIM2, 0xEA5F, TIM_PSCReloadMode_Immediate);
+     73          
+     74              /* Clear TIM2 update pending flag */
+     75              TIM_ClearFlag(TIM2, TIM_FLAG_Update);
+     76          
+     77              /* Enable TIM2 Update interrupt */
+     78              TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+     79          }
+     80          
+     81          void ADC_Configuration(void)
+     82          {
+     83              ADC_InitTypeDef  ADC_InitStructure;
+     84          
+     85              /* ADC1 Configuration */
+     86              ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+     87              ADC_InitStructure.ADC_ScanConvMode = DISABLE;
+     88              ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+     89              ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+     90              ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+     91              ADC_InitStructure.ADC_NbrOfChannel = 1;
+     92              ADC_Init(ADC1, &ADC_InitStructure);
+     93          
+     94              /* ADC1 regular channel8 configuration */ 
+     95              ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_55Cycles5);
+     96          
+     97              /* Enable ADC1 DMA */
+     98          //    ADC_DMACmd(ADC1, ENABLE);
+     99          
+    100              /* Enable ADC1 */
+    101              ADC_Cmd(ADC1, ENABLE);
+    102          
+    103              /* Enable ADC1 reset calibaration register */   
+    104              ADC_ResetCalibration(ADC1);
+    105              /* Check the end of ADC1 reset calibration register */
+    106              while(ADC_GetResetCalibrationStatus(ADC1));
+    107          
+    108              /* Start ADC1 calibaration */
+    109              ADC_StartCalibration(ADC1);
+    110              /* Check the end of ADC1 calibration */
+    111              while(ADC_GetCalibrationStatus(ADC1));
+    112          
+    113              /* Start ADC1 Software Conversion */ 
+    114              ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    115          }
+    116          
+    117          void TIM_Configuration(void);
+    118          void ADC_Configuration(void);
+    119          #endif
+    120          
+    121          static bool g_print_menu_control_flag = TRUE;
+    122          
+    123          #if 0
+    124          // Second Timer consume flag
+    125          bool g_sec_time_consume_flag = FALSE;
+    126          #endif
+    127          
+    128          static void print_menu_command(void)
+    129          {
+    130              if(TRUE == g_print_menu_control_flag)
+    131              {
+    132                  printf("\n---------------------\n");
+    133                  printf("Press menu key\n");
+    134                  printf("---------------------\n");
+    135                  printf("0> System Information\n");
+    136                  printf("---------------------\n");
+    137                  printf("1> LED Test\n");
+    138                  printf("2> KEY Test\n");
+    139                  printf("3> 7-Segment Test\n");
+    140                  printf("4> USB HID Test\n");
+    141                  printf("5> Auto Sensor Board Detect\n");
+    142                  printf("6> MPU 9150 9 Axis Sensor Test\n");
+    143                  printf("---------------------\n");
+    144                  printf("x> quit\n\n");
+    145              }
+    146          
+    147              g_print_menu_control_flag = FALSE;
+    148          }
+    149          
+    150          /*
+    151           * Name   : main
+    152           * Input  : None
+    153           * Output : None
+    154           * Return : None
+    155           */
+    156          int main(void)
+    157          {
+    158              uint8_t ch;
+    159          
+    160              /* System Clocks Configuration */
+    161              RCC_Configuration();
+    162          
+    163              RCC_GetClocksFreq(&rcc_clocks);
+    164          
+    165              /* NVIC configuration */
+    166              NVIC_Configuration();
+    167          
+    168              /* Configure the GPIO ports */
+    169              GPIO_Configuration();
+    170          
+    171              /* UART initialization */
+    172              USART1_Init_forSerial();
+    173          //    USART2_Init_forComm();
+    174          
+    175              printf("\n\n[Sensor Test] ...\n");
+    176          
+    177              USB_Initialize();    
+    178              printf("USB_Initialize() done\n");
+    179          
+    180              LED_Initialize();
+    181              printf("LED_Initialize() done\n");
+    182          
+    183              Seven_Segment_Initilaze();
+    184              printf("Seven_Segment_Initilaze() done\n");
+    185          
+    186              KEY_Initialize();
+    187              printf("KEY_Initialize() done\n");
+    188          
+    189              board_detect_initialzie();
+    190              printf("board_detect_initialzie() done\n");
+    191          
+    192              /* Configure I2C */
+    193              I2C_LowLevel_Init(I2C1);
+    194              printf("I2C_LowLevel_Init() done\n");
+    195          
+    196          #if 0
+    197              /* Configure TIM */
+    198              TIM_Configuration();
+    199              printf("TIM_Configuration() done\n");
+    200          
+    201              /* Configure ADC */
+    202              ADC_Configuration();
+    203              printf("ADC_Configuration() done\n");
+    204          #endif
+    205          
+    206              /* Setup SysTick Timer for 1 msec interrupts  */
+    207              if (SysTick_Config(rcc_clocks.SYSCLK_Frequency / 1000))
+    208              { 
+    209                  /* Capture error */ 
+    210                  while (1);
+    211              }
+    212              printf("SysTick_Config() done\n");
+    213          
+    214          //    USB_Cable_Config(DISABLE);        
+    215          
+    216              Delay(500);
+    217          
+    218              System_Information();
+    219              
+    220              while(1)
+    221              {
+    222                  print_menu_command();
+    223          
+    224                  if(FALSE == UartQueue_Serial_Is_Empty())
+    225                  {
+    226                      ch = UartQueue_Serial_DeQueue();
+    227                      printf("%c is selected\n\n", (char)ch);
+    228          
+    229                      switch((char)ch)
+    230                      {
+    231                      case '0':
+    232                          System_Information();
+    233                          break;
+    234          
+    235                      case '1':
+    236                          LED_Test();
+    237                          break;
+    238          
+    239                      case '2':
+    240                          KEY_Test();
+    241                          break;
+    242          
+    243                      case '3':
+    244                          Seven_Segment_Test();
+    245                          break;
+    246          
+    247                      case '4':
+    248                          g_TestProcessState = TRUE;
+    249          
+    250                          /* USB initialization */
+    251                          USB_Test_Start();
+    252                          Delay(500);
+    253                          USB_Cable_Config(ENABLE);
+    254                          break;
+    255          
+    256                      case '5':
+    257                          board_detect();
+    258                          break;
+    259          
+    260                      case '6':
+    261                          Test_Sensor9Axis();
+    262                          break;
+    263                      }
+    264          
+    265                      g_print_menu_control_flag = TRUE;
+    266          
+    267                      if('x' == (char)ch)
+    268                      {
+    269                          break;
+    270                      }
+    271                  }
+    272              }
+    273          
+    274              return 0;
+    275          }
+    276          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  NVIC_SetPriority
+        8  SysTick_Config
+             8 -> NVIC_SetPriority
+        8  System_Information
+             8 -> printf
+        8  USB_Test_Start
+             8 -> Set_USBClock
+             8 -> USB_Init
+             8 -> USB_Interrupts_Config
+        8  main
+             8 -> Delay
+             8 -> GPIO_Configuration
+             8 -> I2C_LowLevel_Init
+             8 -> KEY_Initialize
+             8 -> KEY_Test
+             8 -> LED_Initialize
+             8 -> LED_Test
+             8 -> NVIC_Configuration
+             8 -> RCC_Configuration
+             8 -> RCC_GetClocksFreq
+             8 -> Seven_Segment_Initilaze
+             8 -> Seven_Segment_Test
+             8 -> SysTick_Config
+             8 -> System_Information
+             8 -> Test_Sensor9Axis
+             8 -> USART1_Init_forSerial
+             8 -> USB_Cable_Config
+             8 -> USB_Initialize
+             8 -> USB_Test_Start
+             8 -> UartQueue_Serial_DeQueue
+             8 -> UartQueue_Serial_Is_Empty
+             8 -> board_detect
+             8 -> board_detect_initialzie
+             8 -> print_menu_command
+             8 -> printf
+        8  print_menu_command
+             8 -> printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      20  ?<Constant "%c is selected\n\n">
+      24  ?<Constant "---------------------\n">
+      24  ?<Constant "0> System Information\n">
+      12  ?<Constant "14:55:08">
+      16  ?<Constant "1> LED Test\n">
+      16  ?<Constant "2> KEY Test\n">
+      20  ?<Constant "3> 7-Segment Test\n">
+      20  ?<Constant "4> USB HID Test\n">
+      32  ?<Constant "5> Auto Sensor Board ...">
+      32  ?<Constant "6> MPU 9150 9 Axis Se...">
+      24  ?<Constant "ADCCLK_Frequency = %d\n">
+      24  ?<Constant "HCLK_Frequency = %d\n">
+      28  ?<Constant "I2C_LowLevel_Init() d...">
+      12  ?<Constant "Jun 25 2014">
+      24  ?<Constant "KEY_Initialize() done\n">
+      24  ?<Constant "LED_Initialize() done\n">
+      24  ?<Constant "PCLK1_Frequency = %d\n">
+      24  ?<Constant "PCLK2_Frequency = %d\n">
+      16  ?<Constant "Press menu key\n">
+      24  ?<Constant "SYSCLK_Frequency = %d\n">
+      32  ?<Constant "Seven_Segment_Initila...">
+      24  ?<Constant "SysTick_Config() done\n">
+      24  ?<Constant "USB_Initialize() done\n">
+      24  ?<Constant "\n---------------------\n">
+      36  ?<Constant "\nProgram Build Date: ...">
+      24  ?<Constant "\n\n[Sensor Test] ...\n">
+      32  ?<Constant "board_detect_initialz...">
+      12  ?<Constant "x> quit\n\n">
+       4  ??DataTable4
+       4  ??DataTable4_1
+       4  ??DataTable4_10
+       4  ??DataTable4_11
+       4  ??DataTable4_12
+       4  ??DataTable4_13
+       4  ??DataTable4_14
+       4  ??DataTable4_15
+       4  ??DataTable4_16
+       4  ??DataTable4_17
+       4  ??DataTable4_18
+       4  ??DataTable4_19
+       4  ??DataTable4_2
+       4  ??DataTable4_20
+       4  ??DataTable4_21
+       4  ??DataTable4_22
+       4  ??DataTable4_23
+       4  ??DataTable4_24
+       4  ??DataTable4_25
+       4  ??DataTable4_26
+       4  ??DataTable4_27
+       4  ??DataTable4_28
+       4  ??DataTable4_29
+       4  ??DataTable4_3
+       4  ??DataTable4_30
+       4  ??DataTable4_31
+       4  ??DataTable4_32
+       4  ??DataTable4_33
+       4  ??DataTable4_34
+       4  ??DataTable4_35
+       4  ??DataTable4_36
+       4  ??DataTable4_4
+       4  ??DataTable4_5
+       4  ??DataTable4_6
+       4  ??DataTable4_7
+       4  ??DataTable4_8
+       4  ??DataTable4_9
+      34  NVIC_SetPriority
+      50  SysTick_Config
+      64  System_Information
+      16  USB_Test_Start
+       1  g_TestProcessState
+       1  g_print_menu_control_flag
+     264  main
+      96  print_menu_command
+      20  rcc_clocks
+
+ 
+  21 bytes in section .bss
+   1 byte  in section .data
+ 648 bytes in section .rodata
+ 672 bytes in section .text
+ 
+ 672 bytes of CODE  memory
+ 648 bytes of CONST memory
+  22 bytes of DATA  memory
+
+Errors: none
+Warnings: none

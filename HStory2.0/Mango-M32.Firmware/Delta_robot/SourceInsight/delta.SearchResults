@@ -1,0 +1,13 @@
+---- volume_Pos_out Matches (14 in 4 files) ----
+Global_variable.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):double volume_Pos_out=0;
+Global_variable.h (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\inc):extern double volume_Pos_out;
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):    volume_Pos_out = volume_Pos_Kp*volume_Pos_err + volume_Pos_Ki*(volume_Pos_err_sum) + volume_Pos_Kd*volume_Pos_err_diff;
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):    if(volume_Pos_out>=3600)
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):        volume_Pos_out=3600;
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):    else if(volume_Pos_out<=-3600)
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):	volume_Pos_out=-3600;
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):    if(volume_Pos_out>=0)
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):      volume_Pos_out=volume_Pos_out;
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):    else if(volume_Pos_out<0)
+PID_Controller.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):        volume_Pos_out=-volume_Pos_out;
+Stm32f10x_it.c (d:\cortex\hstory2.0\mango-m32.firmware\delta_robot\src):        TIM3->CCR1=(uint16_t)volume_Pos_out;

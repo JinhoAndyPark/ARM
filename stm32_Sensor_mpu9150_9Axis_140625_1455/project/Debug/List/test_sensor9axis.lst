@@ -1,0 +1,320 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:03 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\S #
+#                    ensor9Axis\test_sensor9axis.cpp                          #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\S #
+#                    ensor9Axis\test_sensor9axis.cpp -D USE_STDPERIPH_DRIVER  #
+#                    -lcN D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9A #
+#                    xis\project\Debug\List\ -lb                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ --diag_suppress Pe549,Pa082 -o        #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On --eec++ -I "C:\Program Files (x86)\IAR               #
+#                    Systems\Embedded Workbench 6.0_0\arm\CMSIS\Include\"     #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\test_sensor9axis.lst                   #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\test_sensor9axis.o                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\Sensor9Axis\test_sensor9axis.cpp
+      1          /*
+      2           * (C) COPYRIGHT 2014 CRZ
+      3           *
+      4           * File Name : test_sensor9axis.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 04/08/2014
+      8           */
+      9          
+     10          /* includes */
+     11          
+     12          #include "hw_config.h"
+     13          
+     14          #include "MPU6050.h"
+     15          #include "I2Cdev.h"
+     16          
+     17          /* functions */
+     18          
+     19          #ifdef __cplusplus
+     20          extern "C" {
+     21          #endif /* __cplusplus */
+     22          
+     23          bool UartQueue_Serial_Is_Empty(void);
+     24          uint16_t UartQueue_Serial_DeQueue(void);
+     25          
+     26          #ifdef __cplusplus
+     27          }
+     28          #endif /* __cplusplus */
+     29          
+     30          extern uint8_t Buffer_Rx1[];
+     31          extern uint8_t Buffer_Tx1[];
+     32          
+     33          /*
+     34           * device operation
+     35           */
+     36          
+     37          uint8_t SENSOR9AXIS_Read_Bytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data)
+     38          {
+     39              /*
+     40               * devAddr should be shifted 1 bit to left ...
+     41               */
+     42              
+     43              Status  i2cRW_status;
+     44          
+     45              /* Disable FSMC */
+     46              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, DISABLE);
+     47          
+     48              Buffer_Tx1[0] = regAddr;
+     49          
+     50              i2cRW_status = I2C_Master_BufferWrite(I2C1, Buffer_Tx1, 1, Interrupt, devAddr << 1);
+     51              if(Error == i2cRW_status)
+     52              {
+     53                  DEBUG_MSG_FUNC_ERROR;
+     54                  return 0;
+     55              }
+     56          
+     57              i2cRW_status = I2C_Master_BufferRead(I2C1, data, length, Polling, devAddr << 1);
+     58              if(Error == i2cRW_status)
+     59              {
+     60                  DEBUG_MSG_FUNC_ERROR;
+     61                  return 0;
+     62              }
+     63          
+     64              /* Enable FSMC */
+     65              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+     66          
+     67              return length;
+     68          }
+     69          
+     70          int8_t SENSOR9AXIS_Write_Bytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data)
+     71          {
+     72              Status  i2cRW_status;
+     73          
+     74              /* Disable FSMC */
+     75              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, DISABLE);
+     76          
+     77              Buffer_Tx1[0] = regAddr;
+     78              memcpy(&Buffer_Tx1[1], data, length);
+     79          
+     80              i2cRW_status = I2C_Master_BufferWrite(I2C1, Buffer_Tx1, length + 1, Interrupt, devAddr << 1);
+     81              if(Error == i2cRW_status)
+     82              {
+     83                  DEBUG_MSG_FUNC_ERROR;
+     84                  return -1;
+     85              }
+     86          
+     87              /* Enable FSMC */
+     88              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+     89          
+     90              return 0;
+     91          }
+     92          
+     93          static bool g_print_menu_control_flag = true;
+     94          
+     95          static void print_menu_command(void)
+     96          {
+     97              if(true == g_print_menu_control_flag)
+     98              {
+     99                  printf("\n---------------------\n");
+    100                  printf("Press menu key\n");
+    101                  printf("---------------------\n");
+    102                  printf("1> Get Device ID\n");
+    103                  printf("2> Get Device ID (MPU-9150 Magnetometer)\n");
+    104                  printf("3> Init & Read 9 axis data\n");
+    105                  printf("---------------------\n");
+    106                  printf("x> quit\n\n");
+    107              }
+    108          
+    109              g_print_menu_control_flag = false;
+    110          }
+    111          
+    112          MPU6050 g_MPU_9150;
+    113          
+    114          void Test_Sensor9Axis(void)
+    115          {
+    116              uint8_t ch, dataVal;
+    117          
+    118              DEBUG_MSG_FUNC_START;
+    119          
+    120              while(1)
+    121              {
+    122                  print_menu_command();
+    123          
+    124                  if(false == UartQueue_Serial_Is_Empty())
+    125                  {
+    126                      ch = UartQueue_Serial_DeQueue();
+    127                      printf("%c is selected\n\n", (char)ch);
+    128          
+    129                      switch((char)ch)
+    130                      {
+    131                      case '0':
+    132                          break;
+    133          
+    134                      case '1':
+    135                          dataVal = g_MPU_9150.getDeviceID();
+    136                          printf("Device ID: 0x%02X\n", dataVal);
+    137                          break;
+    138          
+    139                      case '2':
+    140                      	// read mag - set i2c bypass enable pin to true to access magnetometer
+    141                      	I2Cdev::writeByte(MPU6050_DEFAULT_ADDRESS, MPU6050_RA_INT_PIN_CFG, 0x02);
+    142                      	Delay(50);
+    143                          // enable the magnetometer
+    144                      	I2Cdev::writeByte(MPU9150_RA_MAG_ADDRESS, 0x0A, 0x01);
+    145                      	Delay(50);
+    146                          I2Cdev::readByte(MPU9150_RA_MAG_ADDRESS, 0, &dataVal);
+    147                          printf("Device ID: 0x%02X\n", dataVal);
+    148                          break;
+    149          
+    150                      case '3':
+    151                          {
+    152                              int16_t ax, ay, az;
+    153                              int16_t gx, gy, gz;
+    154                              int16_t mx, my, mz;
+    155          
+    156                              g_MPU_9150.initialize();
+    157                              printf("MPU9150 initialize done.\n");
+    158          
+    159                              while(1)
+    160                              {
+    161                                  // read raw accel/gyro measurements from device
+    162                                  g_MPU_9150.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+    163                                  printf("ax: %d, ay: %d, az: %d, gx: %d, gy: %d, gz: %d, mx: %d, my: %d, mz: %d\n",
+    164                                      ax, ay, az, gx, gy, gz, mx, my, mz);
+    165                                  Delay(300);
+    166                              }
+    167                          }
+    168                          break;
+    169                      }
+    170          
+    171                      g_print_menu_control_flag = true;
+    172          
+    173                      if('x' == (char)ch)
+    174                      {
+    175                          break;
+    176                      }
+    177                  }
+    178              }
+    179          
+    180              return;
+    181          }
+    182          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       32  SENSOR9AXIS_Read_Bytes
+             32 -> DebugMsg_FunctionError
+             32 -> I2C_Master_BufferRead
+             32 -> I2C_Master_BufferWrite
+             32 -> RCC_AHBPeriphClockCmd
+       32  SENSOR9AXIS_Write_Bytes
+             32 -> DebugMsg_FunctionError
+             32 -> I2C_Master_BufferWrite
+             32 -> RCC_AHBPeriphClockCmd
+             32 -> memcpy
+       56  Test_Sensor9Axis
+             56 -> DebugMsg_FunctionStart
+             56 -> Delay
+             56 -> I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+             56 -> I2Cdev::writeByte(uint8_t, uint8_t, uint8_t)
+             56 -> MPU6050::getDeviceID()
+             56 -> MPU6050::getMotion9(int16_t *, int16_t *, int16_t *, int16_t *, int16_t *, int16_t *, int16_t *, int16_t *, int16_t *)
+             56 -> MPU6050::initialize()
+             56 -> UartQueue_Serial_DeQueue
+             56 -> UartQueue_Serial_Is_Empty
+             56 -> print_menu_command()
+             56 -> printf
+        8  __sti__routine()
+              8 -> MPU6050::MPU6050()
+       16  memcpy
+             16 -> __aeabi_memcpy
+        8  print_menu_command()
+              8 -> printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      20  ?<Constant "%c is selected\n\n">
+      24  ?<Constant "---------------------\n">
+      20  ?<Constant "1> Get Device ID\n">
+      44  ?<Constant "2> Get Device ID (MPU...">
+      28  ?<Constant "3> Init & Read 9 axis...">
+      20  ?<Constant "Device ID: 0x%02X\n">
+      28  ?<Constant "MPU9150 initialize do...">
+      16  ?<Constant "Press menu key\n">
+      24  ?<Constant "\n---------------------\n">
+      72  ?<Constant "ax: %d, ay: %d, az: %...">
+      12  ?<Constant "x> quit\n\n">
+       4  ??DataTable4
+       4  ??DataTable4_1
+       4  ??DataTable4_10
+       4  ??DataTable4_11
+       4  ??DataTable4_12
+       4  ??DataTable4_13
+       4  ??DataTable4_14
+       4  ??DataTable4_15
+       4  ??DataTable4_16
+       4  ??DataTable4_17
+       4  ??DataTable4_18
+       4  ??DataTable4_2
+       4  ??DataTable4_3
+       4  ??DataTable4_4
+       4  ??DataTable4_5
+       4  ??DataTable4_6
+       4  ??DataTable4_7
+       4  ??DataTable4_8
+       4  ??DataTable4_9
+     132  SENSOR9AXIS_Read_Bytes
+     102  SENSOR9AXIS_Write_Bytes
+     280  Test_Sensor9Axis
+      10  __sti__routine()
+      16  g_MPU_9150
+       1  g_print_menu_control_flag
+      22  memcpy
+      66  print_menu_command()
+      72  -- Other
+
+ 
+  16 bytes in section .bss
+   1 byte  in section .data
+   4 bytes in section .init_array
+ 376 bytes in section .rodata
+ 688 bytes in section .text
+ 
+ 670 bytes of CODE  memory (+ 22 bytes shared)
+ 376 bytes of CONST memory
+  17 bytes of DATA  memory
+
+Errors: none
+Warnings: none

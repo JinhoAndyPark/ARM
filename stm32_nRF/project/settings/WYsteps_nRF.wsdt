@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>WYsteps_nRF/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>253</Column0><Column1>6</Column1><Column2>27</Column2><Column3>0</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-4338-7953</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>WYsteps_nRF</ExpandedNode><ExpandedNode>WYsteps_nRF/library</ExpandedNode><ExpandedNode>WYsteps_nRF/library/CMSIS</ExpandedNode><ExpandedNode>WYsteps_nRF/library/STM32F10x_StdPeriph_Driver</ExpandedNode><ExpandedNode>WYsteps_nRF/src</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-23493-11483</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\src\Global_variable.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>79</SelStart><SelEnd>79</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\library\CMSIS\CM3\CoreSupport\core_cm3.c</Filename><XPos>0</XPos><YPos>358</YPos><SelStart>8014</SelStart><SelEnd>8014</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\src\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1030</SelStart><SelEnd>1030</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\src\hw_config.c</Filename><XPos>0</XPos><YPos>371</YPos><SelStart>16244</SelStart><SelEnd>16244</SelEnd></Tab><ActiveTab>3</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\src\nRF24L01.c</Filename><XPos>0</XPos><YPos>95</YPos><SelStart>571</SelStart><SelEnd>571</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\project\project_ARM\Mango-M32.Firmware\WYsteps_nRF(interrupt&#xB85C; &#xC791;&#xC0B4;&#xB098;&#xAC8C; &#xB418;&#xB294; &#xC18C;&#xC2A4;)\src\stm32f10x_it.c</Filename><XPos>0</XPos><YPos>267</YPos><SelStart>1119</SelStart><SelEnd>1119</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-01e172e0><key>iaridepm.enu1</key></Toolbar-01e172e0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>589</Bottom><Right>323</Right><x>-2</x><y>-2</y><xscreen>2524</xscreen><yscreen>60</yscreen><sizeHorzCX>-2147483648</sizeHorzCX><sizeHorzCY>-2147483648</sizeHorzCY><sizeVertCX>-2147483648</sizeVertCX><sizeVertCY>-2147483648</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>184</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>186</yscreen><sizeHorzCX>-2147483648</sizeHorzCX><sizeHorzCY>-2147483648</sizeHorzCY><sizeVertCX>-2147483648</sizeVertCX><sizeVertCY>-2147483648</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

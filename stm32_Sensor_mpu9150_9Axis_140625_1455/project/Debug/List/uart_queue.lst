@@ -1,0 +1,187 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:11 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\uart_queue.c                                          #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\uart_queue.c -D USE_STDPERIPH_DRIVER -lcN             #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\uart_queue.lst                         #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\uart_queue.o                            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\uart_queue.c
+      1          
+      2          /* Includes */
+      3          
+      4          #include "hw_config.h"
+      5          #include "uart_queue.h"
+      6          
+      7          /* Defines */
+      8          
+      9          #define  UART_QUEUE_BUFFER_SIZE  200
+     10          
+     11          /* Variables */
+     12          
+     13          // UART Queue for Comm
+     14          uint16_t  uart_queue_comm_buffer[UART_QUEUE_BUFFER_SIZE];
+     15          uint32_t  uart_queue_comm_point_head = 0;
+     16          uint32_t  uart_queue_comm_point_tail = 0;
+     17          
+     18          // UART Queue for Serial
+     19          uint16_t  uart_queue_serial_buffer[UART_QUEUE_BUFFER_SIZE];
+     20          uint32_t  uart_queue_serial_point_head = 0;
+     21          uint32_t  uart_queue_serial_point_tail = 0;
+     22          
+     23          /* Static Functions */
+     24          
+     25          static void uart_queue_increase_point_value(uint32_t * data_p)
+     26          {
+     27              (* data_p) ++;
+     28              if(UART_QUEUE_BUFFER_SIZE == (* data_p))
+     29              {
+     30                  (* data_p) = 0;
+     31              }
+     32          }
+     33          
+     34          /* Global Functions */
+     35          
+     36          // UART Queue for Comm
+     37          
+     38          void UartQueue_Comm_Initialize(void)
+     39          {
+     40              uart_queue_comm_point_head = uart_queue_comm_point_tail = 0;
+     41          }
+     42          
+     43          bool UartQueue_Comm_Is_Empty(void)
+     44          {
+     45              if(uart_queue_comm_point_head == uart_queue_comm_point_tail)
+     46              {
+     47                  return TRUE;
+     48              }
+     49              return FALSE;
+     50          }
+     51          
+     52          void UartQueue_Comm_EnQueue(uint16_t data)
+     53          {
+     54              uart_queue_comm_buffer[uart_queue_comm_point_head] = data;
+     55              uart_queue_increase_point_value(&uart_queue_comm_point_head);
+     56          }
+     57          
+     58          uint16_t UartQueue_Comm_DeQueue(void)
+     59          {
+     60              uint16_t retVal = uart_queue_comm_buffer[uart_queue_comm_point_tail];
+     61              uart_queue_increase_point_value(&uart_queue_comm_point_tail);
+     62              return retVal;
+     63          }
+     64          
+     65          // UART Queue for Serial
+     66          
+     67          bool UartQueue_Serial_Is_Empty(void)
+     68          {
+     69              if(uart_queue_serial_point_head == uart_queue_serial_point_tail)
+     70              {
+     71                  return TRUE;
+     72              }
+     73              return FALSE;
+     74          }
+     75          
+     76          void UartQueue_Serial_EnQueue(uint16_t data)
+     77          {
+     78              uart_queue_serial_buffer[uart_queue_serial_point_head] = data;
+     79              uart_queue_increase_point_value(&uart_queue_serial_point_head);
+     80          }
+     81          
+     82          uint16_t UartQueue_Serial_DeQueue(void)
+     83          {
+     84              uint16_t retVal = uart_queue_serial_buffer[uart_queue_serial_point_tail];
+     85              uart_queue_increase_point_value(&uart_queue_serial_point_tail);
+     86              return retVal;
+     87          }
+     88          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  UartQueue_Comm_DeQueue
+             8 -> uart_queue_increase_point_value
+        8  UartQueue_Comm_EnQueue
+             8 -> uart_queue_increase_point_value
+        0  UartQueue_Comm_Initialize
+        0  UartQueue_Comm_Is_Empty
+        8  UartQueue_Serial_DeQueue
+             8 -> uart_queue_increase_point_value
+        8  UartQueue_Serial_EnQueue
+             8 -> uart_queue_increase_point_value
+        0  UartQueue_Serial_Is_Empty
+        0  uart_queue_increase_point_value
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable6
+       4  ??DataTable6_1
+       4  ??DataTable6_2
+       4  ??DataTable6_3
+       4  ??DataTable6_4
+       4  ??DataTable6_5
+      24  UartQueue_Comm_DeQueue
+      22  UartQueue_Comm_EnQueue
+      12  UartQueue_Comm_Initialize
+      20  UartQueue_Comm_Is_Empty
+      24  UartQueue_Serial_DeQueue
+      22  UartQueue_Serial_EnQueue
+      20  UartQueue_Serial_Is_Empty
+     400  uart_queue_comm_buffer
+       4  uart_queue_comm_point_head
+       4  uart_queue_comm_point_tail
+      18  uart_queue_increase_point_value
+     400  uart_queue_serial_buffer
+       4  uart_queue_serial_point_head
+       4  uart_queue_serial_point_tail
+
+ 
+ 816 bytes in section .bss
+ 186 bytes in section .text
+ 
+ 186 bytes of CODE memory
+ 816 bytes of DATA memory
+
+Errors: none
+Warnings: none

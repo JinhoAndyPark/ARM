@@ -1,0 +1,461 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_istr.c                                            #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\usb_istr.c -D USE_STDPERIPH_DRIVER -lcN               #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_istr.lst                           #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_istr.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\usb_istr.c
+      1          /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+      2          * File Name          : usb_istr.c
+      3          * Author             : MCD Application Team
+      4          * Version            : V3.2.1
+      5          * Date               : 07/05/2010
+      6          * Description        : ISTR events interrupt service routines
+      7          ********************************************************************************
+      8          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+      9          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+     10          * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+     11          * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+     12          * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+     13          * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     14          *******************************************************************************/
+     15          
+     16          /* Includes ------------------------------------------------------------------*/
+     17          #include "usb_lib.h"
+     18          #include "usb_prop.h"
+     19          #include "usb_pwr.h"
+     20          #include "usb_istr.h"
+     21          
+     22          /* Private typedef -----------------------------------------------------------*/
+     23          /* Private define ------------------------------------------------------------*/
+     24          /* Private macro -------------------------------------------------------------*/
+     25          /* Private variables ---------------------------------------------------------*/
+     26          __IO uint16_t wIstr;  /* ISTR register last read value */
+     27          __IO uint8_t bIntPackSOF = 0;  /* SOFs received between 2 consecutive packets */
+     28          
+     29          /* Extern variables ----------------------------------------------------------*/
+     30          /* Private function prototypes -----------------------------------------------*/
+     31          /* Private functions ---------------------------------------------------------*/
+     32          /* function pointers to non-control endpoints service routines */
+     33          void (*pEpInt_IN[7])(void) =
+     34            {
+     35              EP1_IN_Callback,
+     36              EP2_IN_Callback,
+     37              EP3_IN_Callback,
+     38              EP4_IN_Callback,
+     39              EP5_IN_Callback,
+     40              EP6_IN_Callback,
+     41              EP7_IN_Callback,
+     42            };
+     43          
+     44          void (*pEpInt_OUT[7])(void) =
+     45            {
+     46              EP1_OUT_Callback,
+     47              EP2_OUT_Callback,
+     48              EP3_OUT_Callback,
+     49              EP4_OUT_Callback,
+     50              EP5_OUT_Callback,
+     51              EP6_OUT_Callback,
+     52              EP7_OUT_Callback,
+     53            };
+     54          
+     55          #ifndef STM32F10X_CL
+     56          
+     57          /*******************************************************************************
+     58          * Function Name  : USB_Istr
+     59          * Description    : STR events interrupt service routine
+     60          * Input          :
+     61          * Output         :
+     62          * Return         :
+     63          *******************************************************************************/
+     64          void USB_Istr(void)
+     65          {
+     66          
+     67            wIstr = _GetISTR();
+     68          
+     69          #if (IMR_MSK & ISTR_CTR)
+     70            if (wIstr & ISTR_CTR & wInterrupt_Mask)
+     71            {
+     72              /* servicing of the endpoint correct transfer interrupt */
+     73              /* clear of the CTR flag into the sub */
+     74              CTR_LP();
+     75          #ifdef CTR_CALLBACK
+     76              CTR_Callback();
+     77          #endif
+     78            }
+     79          #endif
+     80            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/  
+     81          #if (IMR_MSK & ISTR_RESET)
+     82            if (wIstr & ISTR_RESET & wInterrupt_Mask)
+     83            {
+     84              _SetISTR((uint16_t)CLR_RESET);
+     85              Device_Property.Reset();
+     86          #ifdef RESET_CALLBACK
+     87              RESET_Callback();
+     88          #endif
+     89            }
+     90          #endif
+     91            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+     92          #if (IMR_MSK & ISTR_DOVR)
+     93            if (wIstr & ISTR_DOVR & wInterrupt_Mask)
+     94            {
+     95              _SetISTR((uint16_t)CLR_DOVR);
+     96          #ifdef DOVR_CALLBACK
+     97              DOVR_Callback();
+     98          #endif
+     99            }
+    100          #endif
+    101            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    102          #if (IMR_MSK & ISTR_ERR)
+    103            if (wIstr & ISTR_ERR & wInterrupt_Mask)
+    104            {
+    105              _SetISTR((uint16_t)CLR_ERR);
+    106          #ifdef ERR_CALLBACK
+    107              ERR_Callback();
+    108          #endif
+    109            }
+    110          #endif
+    111            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    112          #if (IMR_MSK & ISTR_WKUP)
+    113            if (wIstr & ISTR_WKUP & wInterrupt_Mask)
+    114            {
+    115              _SetISTR((uint16_t)CLR_WKUP);
+    116              Resume(RESUME_EXTERNAL);
+    117          #ifdef WKUP_CALLBACK
+    118              WKUP_Callback();
+    119          #endif
+    120            }
+    121          #endif
+    122            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    123          #if (IMR_MSK & ISTR_SUSP)
+    124            if (wIstr & ISTR_SUSP & wInterrupt_Mask)
+    125            {
+    126          
+    127              /* check if SUSPEND is possible */
+    128              if (fSuspendEnabled)
+    129              {
+    130                Suspend();
+    131              }
+    132              else
+    133              {
+    134                /* if not possible then resume after xx ms */
+    135                Resume(RESUME_LATER);
+    136              }
+    137              /* clear of the ISTR bit must be done after setting of CNTR_FSUSP */
+    138              _SetISTR((uint16_t)CLR_SUSP);
+    139          #ifdef SUSP_CALLBACK
+    140              SUSP_Callback();
+    141          #endif
+    142            }
+    143          #endif
+    144            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    145          #if (IMR_MSK & ISTR_SOF)
+    146            if (wIstr & ISTR_SOF & wInterrupt_Mask)
+    147            {
+    148              _SetISTR((uint16_t)CLR_SOF);
+    149              bIntPackSOF++;
+    150          
+    151          #ifdef SOF_CALLBACK
+    152              SOF_Callback();
+    153          #endif
+    154            }
+    155          #endif
+    156            /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    157          #if (IMR_MSK & ISTR_ESOF)
+    158            if (wIstr & ISTR_ESOF & wInterrupt_Mask)
+    159            {
+    160              _SetISTR((uint16_t)CLR_ESOF);
+    161              /* resume handling timing is made with ESOFs */
+    162              Resume(RESUME_ESOF); /* request without change of the machine state */
+    163          
+    164          #ifdef ESOF_CALLBACK
+    165              ESOF_Callback();
+    166          #endif
+    167            }
+    168          #endif
+    169          } /* USB_Istr */
+    170          
+    171          /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    172          #else /* STM32F10X_CL */
+    173          
+    174          
+    175          /*******************************************************************************
+    176          * Function Name  : STM32_PCD_OTG_ISR_Handler
+    177          * Description    : Handles all USB Device Interrupts
+    178          * Input          : None
+    179          * Output         : None
+    180          * Return         : status
+    181          *******************************************************************************/
+    182          u32 STM32_PCD_OTG_ISR_Handler (void)
+    183          {
+    184            USB_OTG_GINTSTS_TypeDef gintr_status;
+    185            u32 retval = 0;
+    186          
+    187            if (USBD_FS_IsDeviceMode()) /* ensure that we are in device mode */
+    188            {
+    189              gintr_status.d32 = OTGD_FS_ReadCoreItr();
+    190          
+    191             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    192              
+    193              /* If there is no interrupt pending exit the interrupt routine */
+    194              if (!gintr_status.d32)
+    195              {
+    196                return 0;
+    197              }
+    198          
+    199             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    200              /* Early Suspend interrupt */ 
+    201          #ifdef INTR_ERLYSUSPEND
+    202              if (gintr_status.b.erlysuspend)
+    203              {
+    204                retval |= OTGD_FS_Handle_EarlySuspend_ISR();
+    205              }
+    206          #endif /* INTR_ERLYSUSPEND */
+    207              
+    208             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    209              /* End of Periodic Frame interrupt */
+    210          #ifdef INTR_EOPFRAME    
+    211              if (gintr_status.b.eopframe)
+    212              {
+    213                retval |= OTGD_FS_Handle_EOPF_ISR();
+    214              }
+    215          #endif /* INTR_EOPFRAME */
+    216              
+    217             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    218              /* Non Periodic Tx FIFO Emty interrupt */
+    219          #ifdef INTR_NPTXFEMPTY    
+    220              if (gintr_status.b.nptxfempty)
+    221              {
+    222                retval |= OTGD_FS_Handle_NPTxFE_ISR();
+    223              }
+    224          #endif /* INTR_NPTXFEMPTY */
+    225              
+    226             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    227              /* Wakeup or RemoteWakeup interrupt */
+    228          #ifdef INTR_WKUPINTR    
+    229              if (gintr_status.b.wkupintr)
+    230              {   
+    231                retval |= OTGD_FS_Handle_Wakeup_ISR();
+    232              }
+    233          #endif /* INTR_WKUPINTR */   
+    234              
+    235             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    236              /* Suspend interrupt */
+    237          #ifdef INTR_USBSUSPEND
+    238              if (gintr_status.b.usbsuspend)
+    239              { 
+    240                /* check if SUSPEND is possible */
+    241                if (fSuspendEnabled)
+    242                {
+    243                  Suspend();
+    244                }
+    245                else
+    246                {
+    247                  /* if not possible then resume after xx ms */
+    248                  Resume(RESUME_LATER); /* This case shouldn't happen in OTG Device mode because 
+    249                  there's no ESOF interrupt to increment the ResumeS.bESOFcnt in the Resume state machine */
+    250                }
+    251                      
+    252                retval |= OTGD_FS_Handle_USBSuspend_ISR();
+    253              }
+    254          #endif /* INTR_USBSUSPEND */
+    255          
+    256             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    257              /* Start of Frame interrupt */
+    258          #ifdef INTR_SOFINTR    
+    259              if (gintr_status.b.sofintr)
+    260              {
+    261                /* Update the frame number variable */
+    262                bIntPackSOF++;
+    263                
+    264                retval |= OTGD_FS_Handle_Sof_ISR();
+    265              }
+    266          #endif /* INTR_SOFINTR */
+    267              
+    268             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    269              /* Receive FIFO Queue Status Level interrupt */
+    270          #ifdef INTR_RXSTSQLVL
+    271              if (gintr_status.b.rxstsqlvl)
+    272              {
+    273                retval |= OTGD_FS_Handle_RxStatusQueueLevel_ISR();
+    274              }
+    275          #endif /* INTR_RXSTSQLVL */
+    276              
+    277             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    278              /* Enumeration Done interrupt */
+    279          #ifdef INTR_ENUMDONE
+    280              if (gintr_status.b.enumdone)
+    281              {
+    282                retval |= OTGD_FS_Handle_EnumDone_ISR();
+    283              }
+    284          #endif /* INTR_ENUMDONE */
+    285              
+    286             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    287              /* Reset interrutp */
+    288          #ifdef INTR_USBRESET
+    289              if (gintr_status.b.usbreset)
+    290              {
+    291                retval |= OTGD_FS_Handle_UsbReset_ISR();
+    292              }    
+    293          #endif /* INTR_USBRESET */
+    294              
+    295             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+    296              /* IN Endpoint interrupt */
+    297          #ifdef INTR_INEPINTR
+    298              if (gintr_status.b.inepint)
+    299              {
+    300                retval |= OTGD_FS_Handle_InEP_ISR();
+    301              }
+    302          #endif /* INTR_INEPINTR */
+    303              
+    304             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    305              /* OUT Endpoint interrupt */
+    306          #ifdef INTR_OUTEPINTR
+    307              if (gintr_status.b.outepintr)
+    308              {
+    309                retval |= OTGD_FS_Handle_OutEP_ISR();
+    310              }
+    311          #endif /* INTR_OUTEPINTR */    
+    312           
+    313             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    314              /* Mode Mismatch interrupt */
+    315          #ifdef INTR_MODEMISMATCH
+    316              if (gintr_status.b.modemismatch)
+    317              {
+    318                retval |= OTGD_FS_Handle_ModeMismatch_ISR();
+    319              }
+    320          #endif /* INTR_MODEMISMATCH */  
+    321          
+    322             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    323              /* Global IN Endpoints NAK Effective interrupt */
+    324          #ifdef INTR_GINNAKEFF
+    325              if (gintr_status.b.ginnakeff)
+    326              {
+    327                retval |= OTGD_FS_Handle_GInNakEff_ISR();
+    328              }
+    329          #endif /* INTR_GINNAKEFF */  
+    330          
+    331             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    332              /* Global OUT Endpoints NAK effective interrupt */
+    333          #ifdef INTR_GOUTNAKEFF
+    334              if (gintr_status.b.goutnakeff)
+    335              {
+    336                retval |= OTGD_FS_Handle_GOutNakEff_ISR();
+    337              }
+    338          #endif /* INTR_GOUTNAKEFF */  
+    339          
+    340             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    341              /* Isochrounous Out packet Dropped interrupt */
+    342          #ifdef INTR_ISOOUTDROP
+    343              if (gintr_status.b.isooutdrop)
+    344              {
+    345                retval |= OTGD_FS_Handle_IsoOutDrop_ISR();
+    346              }
+    347          #endif /* INTR_ISOOUTDROP */  
+    348          
+    349             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    350              /* Endpoint Mismatch error interrupt */
+    351          #ifdef INTR_EPMISMATCH
+    352              if (gintr_status.b.epmismatch)
+    353              {
+    354                retval |= OTGD_FS_Handle_EPMismatch_ISR();
+    355              }
+    356          #endif /* INTR_EPMISMATCH */  
+    357          
+    358             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    359              /* Incomplete Isochrous IN tranfer error interrupt */
+    360          #ifdef INTR_INCOMPLISOIN
+    361              if (gintr_status.b.incomplisoin)
+    362              {
+    363                retval |= OTGD_FS_Handle_IncomplIsoIn_ISR();
+    364              }
+    365          #endif /* INTR_INCOMPLISOIN */  
+    366          
+    367             /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/    
+    368              /* Incomplete Isochrous OUT tranfer error interrupt */
+    369          #ifdef INTR_INCOMPLISOOUT
+    370              if (gintr_status.b.outepintr)
+    371              {
+    372                retval |= OTGD_FS_Handle_IncomplIsoOut_ISR();
+    373              }
+    374          #endif /* INTR_INCOMPLISOOUT */  
+    375            
+    376            }
+    377            return retval;
+    378          }
+    379          
+    380          #endif /* STM32F10X_CL */
+    381          
+    382          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+    383          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  USB_Istr
+             8 -- Indirect call
+             8 -> CTR_LP
+             8 -> Resume
+             8 -> Suspend
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+     236  USB_Istr
+       1  bIntPackSOF
+      28  pEpInt_IN
+      28  pEpInt_OUT
+       2  wIstr
+
+ 
+   3 bytes in section .bss
+  56 bytes in section .data
+ 236 bytes in section .text
+ 
+ 236 bytes of CODE memory
+  59 bytes of DATA memory
+
+Errors: none
+Warnings: none

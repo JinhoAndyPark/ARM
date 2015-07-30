@@ -1,0 +1,12 @@
+---- USBwValue0 Matches (11 in 3 files) ----
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):  if ((pInformation->USBwValue0 <=
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):    pInformation->Current_Configuration = pInformation->USBwValue0;
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):  Re = (*pProperty->Class_Get_Interface_Setting)(pInformation->USBwIndex0, pInformation->USBwValue0);
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):      pInformation->Current_AlternateSetting = pInformation->USBwValue0;
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):      if ((pInformation->USBwValue0 > 127) || (pInformation->USBwValue1 != 0)
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):      if ((pInformation->USBwValue0 == DEVICE_REMOTE_WAKEUP)
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):      if (pInformation->USBwValue0 == DEVICE_REMOTE_WAKEUP
+usb_core.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\src):      SetDeviceAddress(pInformation->USBwValue0);
+usb_core.h (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Libraries\STM32_USB-FS-Device_Driver\inc):#define USBwValue0 USBwValues.bw.bb0
+usb_prop.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Z1.Src009.USB.HID\src):  uint8_t wValue0 = pInformation->USBwValue0;
+usb_prop.c (D:\WkPjt\MStory2.0\Mango-Z1.Firmware\Z1.Src009.USB.HID\src):  uint8_t wValue0 = pInformation->USBwValue0;

@@ -1,0 +1,43 @@
+---- NVIC_IRQChannel Matches (44 in 3 files) ----
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;// priority each group 0,1,2,3,4
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;	//priority sub in each group xxxxx
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;	
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQHandler;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
+Hw_config.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\src):    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):  assert_param(IS_FUNCTIONAL_STATE(NVIC_InitStruct->NVIC_IRQChannelCmd));
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):  assert_param(IS_NVIC_PREEMPTION_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority));  
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):  assert_param(IS_NVIC_SUB_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelSubPriority));
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):  if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):    tmppriority = (uint32_t)NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << tmppre;
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):    tmppriority |=  NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub;
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):    NVIC->IP[NVIC_InitStruct->NVIC_IRQChannel] = tmppriority;
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):    NVIC->ISER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):      (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):    NVIC->ICER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+Misc.c (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\src):      (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):  uint8_t NVIC_IRQChannel;                    /*!< Specifies the IRQ channel to be enabled or disabled.
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):  uint8_t NVIC_IRQChannelPreemptionPriority;  /*!< Specifies the pre-emption priority for the IRQ channel
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):                                                   specified in NVIC_IRQChannel. This parameter can be a value
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):  uint8_t NVIC_IRQChannelSubPriority;         /*!< Specifies the subpriority level for the IRQ channel specified
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):                                                   in NVIC_IRQChannel. This parameter can be a value
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):  FunctionalState NVIC_IRQChannelCmd;         /*!< Specifies whether the IRQ channel defined in NVIC_IRQChannel
+Misc.h (d:\cortex\hstory2.0\mango-m32.firmware\04. periph_rb\library\stm32f10x_stdperiph_driver\inc):    NVIC_PriorityGroup   | NVIC_IRQChannelPreemptionPriority | NVIC_IRQChannelSubPriority  | Description

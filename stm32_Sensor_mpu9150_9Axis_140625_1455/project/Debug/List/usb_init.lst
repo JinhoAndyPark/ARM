@@ -1,0 +1,153 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:05 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\L #
+#                    ibraries\STM32_USB-FS-Device_Driver\src\usb_init.c       #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\L #
+#                    ibraries\STM32_USB-FS-Device_Driver\src\usb_init.c -D    #
+#                    USE_STDPERIPH_DRIVER -lcN D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\Debug\List\ -lb         #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ --diag_suppress Pe549,Pa082 -o        #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_init.lst                           #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_init.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\Libraries\STM32_USB-FS-Device_Driver\src\usb_init.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    usb_init.c
+      4            * @author  MCD Application Team
+      5            * @version V3.4.0
+      6            * @date    29-June-2012
+      7            * @brief   Initialization routines & global variables
+      8            ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          
+     29          /* Includes ------------------------------------------------------------------*/
+     30          #include "usb_lib.h"
+     31          
+     32          /* Private typedef -----------------------------------------------------------*/
+     33          /* Private define ------------------------------------------------------------*/
+     34          /* Private macro -------------------------------------------------------------*/
+     35          /* Private variables ---------------------------------------------------------*/
+     36          /*  The number of current endpoint, it will be used to specify an endpoint */
+     37           uint8_t	EPindex;
+     38          /*  The number of current device, it is an index to the Device_Table */
+     39          /* uint8_t	Device_no; */
+     40          /*  Points to the DEVICE_INFO structure of current device */
+     41          /*  The purpose of this register is to speed up the execution */
+     42          DEVICE_INFO *pInformation;
+     43          /*  Points to the DEVICE_PROP structure of current device */
+     44          /*  The purpose of this register is to speed up the execution */
+     45          DEVICE_PROP *pProperty;
+     46          /*  Temporary save the state of Rx & Tx status. */
+     47          /*  Whenever the Rx or Tx state is changed, its value is saved */
+     48          /*  in this variable first and will be set to the EPRB or EPRA */
+     49          /*  at the end of interrupt process */
+     50          uint16_t	SaveState ;
+     51          uint16_t  wInterrupt_Mask;
+     52          DEVICE_INFO	Device_Info;
+     53          USER_STANDARD_REQUESTS  *pUser_Standard_Requests;
+     54          
+     55          /* Extern variables ----------------------------------------------------------*/
+     56          /* Private function prototypes -----------------------------------------------*/
+     57          /* Private functions ---------------------------------------------------------*/
+     58          
+     59          /*******************************************************************************
+     60          * Function Name  : USB_Init
+     61          * Description    : USB system initialization
+     62          * Input          : None.
+     63          * Output         : None.
+     64          * Return         : None.
+     65          *******************************************************************************/
+     66          void USB_Init(void)
+     67          {
+     68            pInformation = &Device_Info;
+     69            pInformation->ControlState = 2;
+     70            pProperty = &Device_Property;
+     71            pUser_Standard_Requests = &User_Standard_Requests;
+     72            /* Initialize devices one by one */
+     73            pProperty->Init();
+     74          }
+     75          
+     76          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  USB_Init
+             8 -- Indirect call
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      28  Device_Info
+       1  EPindex
+       2  SaveState
+      64  USB_Init
+       4  pInformation
+       4  pProperty
+       4  pUser_Standard_Requests
+       2  wInterrupt_Mask
+
+ 
+ 45 bytes in section .bss
+ 64 bytes in section .text
+ 
+ 64 bytes of CODE memory
+ 45 bytes of DATA memory
+
+Errors: none
+Warnings: none

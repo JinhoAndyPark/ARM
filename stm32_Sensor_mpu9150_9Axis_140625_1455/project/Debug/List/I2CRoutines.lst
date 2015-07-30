@@ -1,0 +1,835 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:07 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\I2CRoutines.c                                         #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\I2CRoutines.c -D USE_STDPERIPH_DRIVER -lcN            #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\I2CRoutines.lst                        #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\I2CRoutines.o                           #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\I2CRoutines.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file OptimizedI2Cexamples/src/I2CRoutines.c
+      4            * @author  MCD Application Team
+      5            * @version  V4.0.0
+      6            * @date  06/18/2010
+      7            * @brief  Contains the I2Cx slave/Master read and write routines.
+      8            ******************************************************************************
+      9            * @copy
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19            */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "I2CRoutines.h"
+     23          
+     24          
+     25          /** @addtogroup Optimized I2C examples
+     26            * @{
+     27            */
+     28          
+     29          
+     30          /* Private typedef -----------------------------------------------------------*/
+     31          /* Private define ------------------------------------------------------------*/
+     32          /* Private macro -------------------------------------------------------------*/
+     33          /* Private variables ---------------------------------------------------------*/
+     34          
+     35          DMA_InitTypeDef  I2CDMA_InitStructure;
+     36          __IO uint32_t I2CDirection = I2C_DIRECTION_TX;
+     37          __IO uint32_t NumbOfBytes1;
+     38          __IO uint32_t NumbOfBytes2;
+     39          __IO uint8_t Address;
+     40          
+     41          /* Buffer of data to be received by I2C1 */
+     42          uint8_t Buffer_Rx1[1255];
+     43          /* Buffer of data to be transmitted by I2C1 */
+     44          uint8_t Buffer_Tx1[1255];
+     45          /* Buffer of data to be received by I2C2 */
+     46          //uint8_t Buffer_Rx2[255];
+     47          /* Buffer of data to be transmitted by I2C2 */
+     48          //uint8_t Buffer_Tx2[255];
+     49          
+     50          /* Private function prototypes -----------------------------------------------*/
+     51          /* Private functions ---------------------------------------------------------*/
+     52          /**
+     53            * @brief  Reads buffer of bytes  from the slave.
+     54            * @param pBuffer: Buffer of bytes to be read from the slave.
+     55            * @param NumByteToRead: Number of bytes to be read by the Master.
+     56            * @param Mode: Polling or DMA or Interrupt having the highest priority in the application.
+     57            * @param SlaveAddress: The address of the slave to be addressed by the Master.
+     58            * @retval : None.
+     59            */
+     60          Status I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,  uint32_t NumByteToRead, I2C_ProgrammingModel Mode, uint8_t SlaveAddress)
+     61          
+     62          {
+     63              __IO uint32_t temp = 0;
+     64              __IO uint32_t Timeout = 0;
+     65          
+     66              /* Enable I2C errors interrupts (used in all modes: Polling, DMA and Interrupts */
+     67              I2Cx->CR2 |= I2C_IT_ERR;
+     68          
+     69              if (Mode == DMA) /* I2Cx Master Reception using DMA */
+     70              {
+     71                  /* Configure I2Cx DMA channel */
+     72                  I2C_DMAConfig(I2Cx, pBuffer, NumByteToRead, I2C_DIRECTION_RX);
+     73                  /* Set Last bit to have a NACK on the last received byte */
+     74                  I2Cx->CR2 |= CR2_LAST_Set;
+     75                  /* Enable I2C DMA requests */
+     76                  I2Cx->CR2 |= CR2_DMAEN_Set;
+     77                  Timeout = 0xFFFF;
+     78                  /* Send START condition */
+     79                  I2Cx->CR1 |= CR1_START_Set;
+     80                  /* Wait until SB flag is set: EV5  */
+     81                  while ((I2Cx->SR1&0x0001) != 0x0001)
+     82                  {
+     83                      if (Timeout-- == 0)
+     84                          return Error;
+     85                  }
+     86                  Timeout = 0xFFFF;
+     87                  /* Send slave address */
+     88                  /* Set the address bit0 for read */
+     89                  SlaveAddress |= OAR1_ADD0_Set;
+     90                  Address = SlaveAddress;
+     91                  /* Send the slave address */
+     92                  I2Cx->DR = Address;
+     93                  /* Wait until ADDR is set: EV6 */
+     94                  while ((I2Cx->SR1&0x0002) != 0x0002)
+     95                  {
+     96                      if (Timeout-- == 0)
+     97                          return Error;
+     98                  }
+     99                  /* Clear ADDR flag by reading SR2 register */
+    100                  temp = I2Cx->SR2;
+    101                  if (I2Cx == I2C1)
+    102                  {
+    103                      /* Wait until DMA end of transfer */
+    104                      while (!DMA_GetFlagStatus(DMA1_FLAG_TC7));
+    105                      /* Disable DMA Channel */
+    106                      DMA_Cmd(I2C1_DMA_CHANNEL_RX, DISABLE);
+    107                      /* Clear the DMA Transfer Complete flag */
+    108                      DMA_ClearFlag(DMA1_FLAG_TC7);
+    109          
+    110                  }
+    111          
+    112                  else /* I2Cx = I2C2*/
+    113                  {
+    114                      /* Wait until DMA end of transfer */
+    115                      while (!DMA_GetFlagStatus(DMA1_FLAG_TC5));
+    116                      /* Disable DMA Channel */
+    117                      DMA_Cmd(I2C2_DMA_CHANNEL_RX, DISABLE);
+    118                      /* Clear the DMA Transfer Complete flag */
+    119                      DMA_ClearFlag(DMA1_FLAG_TC5);
+    120                  }
+    121                  /* Program the STOP */
+    122                  I2Cx->CR1 |= CR1_STOP_Set;
+    123                  /* Make sure that the STOP bit is cleared by Hardware before CR1 write access */
+    124                  while ((I2Cx->CR1&0x200) == 0x200);
+    125              }
+    126          
+    127              else if (Mode == Polling) /* I2Cx Master Reception using Polling */
+    128              {
+    129          
+    130          
+    131                  if (NumByteToRead == 1)
+    132                  {
+    133                      Timeout = 0xFFFF;
+    134                      /* Send START condition */
+    135                      I2Cx->CR1 |= CR1_START_Set;
+    136                      /* Wait until SB flag is set: EV5  */
+    137                      while ((I2Cx->SR1&0x0001) != 0x0001)
+    138                      {
+    139                          if (Timeout-- == 0)
+    140                              return Error;
+    141                      }
+    142                      /* Send slave address */
+    143                      /* Reset the address bit0 for read */
+    144                      SlaveAddress |= OAR1_ADD0_Set;
+    145                      Address = SlaveAddress;
+    146                      /* Send the slave address */
+    147                      I2Cx->DR = Address;
+    148                      /* Wait until ADDR is set: EV6_3, then program ACK = 0, clear ADDR
+    149                      and program the STOP just after ADDR is cleared. The EV6_3 
+    150                      software sequence must complete before the current byte end of transfer.*/
+    151                      /* Wait until ADDR is set */
+    152                      Timeout = 0xFFFF;
+    153                      while ((I2Cx->SR1&0x0002) != 0x0002)
+    154                      {
+    155                          if (Timeout-- == 0)
+    156                              return Error;
+    157                      }
+    158                      /* Clear ACK bit */
+    159                      I2Cx->CR1 &= CR1_ACK_Reset;
+    160                      /* Disable all active IRQs around ADDR clearing and STOP programming because the EV6_3
+    161                      software sequence must complete before the current byte end of transfer */
+    162                      __disable_irq();
+    163                      /* Clear ADDR flag */
+    164                      temp = I2Cx->SR2;
+    165                      /* Program the STOP */
+    166                      I2Cx->CR1 |= CR1_STOP_Set;
+    167                      /* Re-enable IRQs */
+    168                      __enable_irq();
+    169                      /* Wait until a data is received in DR register (RXNE = 1) EV7 */
+    170                      while ((I2Cx->SR1 & 0x00040) != 0x000040);
+    171                      /* Read the data */
+    172                      *pBuffer = I2Cx->DR;
+    173                      /* Make sure that the STOP bit is cleared by Hardware before CR1 write access */
+    174                      while ((I2Cx->CR1&0x200) == 0x200);
+    175                      /* Enable Acknowledgement to be ready for another reception */
+    176                      I2Cx->CR1 |= CR1_ACK_Set;
+    177          
+    178                  }
+    179          
+    180                  else if (NumByteToRead == 2)
+    181                  {
+    182                      /* Set POS bit */
+    183                      I2Cx->CR1 |= CR1_POS_Set;
+    184                      Timeout = 0xFFFF;
+    185                      /* Send START condition */
+    186                      I2Cx->CR1 |= CR1_START_Set;
+    187                      /* Wait until SB flag is set: EV5 */
+    188                      while ((I2Cx->SR1&0x0001) != 0x0001)
+    189                      {
+    190                          if (Timeout-- == 0)
+    191                              return Error;
+    192                      }
+    193                      Timeout = 0xFFFF;
+    194                      /* Send slave address */
+    195                      /* Set the address bit0 for read */
+    196                      SlaveAddress |= OAR1_ADD0_Set;
+    197                      Address = SlaveAddress;
+    198                      /* Send the slave address */
+    199                      I2Cx->DR = Address;
+    200                      /* Wait until ADDR is set: EV6 */
+    201                      while ((I2Cx->SR1&0x0002) != 0x0002)
+    202                      {
+    203                          if (Timeout-- == 0)
+    204                              return Error;
+    205                      }
+    206                      /* EV6_1: The acknowledge disable should be done just after EV6,
+    207                      that is after ADDR is cleared, so disable all active IRQs around ADDR clearing and 
+    208                      ACK clearing */
+    209                      __disable_irq();
+    210                      /* Clear ADDR by reading SR2 register  */
+    211                      temp = I2Cx->SR2;
+    212                      /* Clear ACK */
+    213                      I2Cx->CR1 &= CR1_ACK_Reset;
+    214                      /*Re-enable IRQs */
+    215                      __enable_irq();
+    216                      /* Wait until BTF is set */
+    217                      while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    218                      /* Disable IRQs around STOP programming and data reading because of the limitation ?*/
+    219                      __disable_irq();
+    220                      /* Program the STOP */
+    221                      I2C_GenerateSTOP(I2Cx, ENABLE);
+    222                      /* Read first data */
+    223                      *pBuffer = I2Cx->DR;
+    224                      /* Re-enable IRQs */
+    225                      __enable_irq();
+    226                      /**/
+    227                      pBuffer++;
+    228                      /* Read second data */
+    229                      *pBuffer = I2Cx->DR;
+    230                      /* Make sure that the STOP bit is cleared by Hardware before CR1 write access */
+    231                      while ((I2Cx->CR1&0x200) == 0x200);
+    232                      /* Enable Acknowledgement to be ready for another reception */
+    233                      I2Cx->CR1  |= CR1_ACK_Set;
+    234                      /* Clear POS bit */
+    235                      I2Cx->CR1  &= CR1_POS_Reset;
+    236          
+    237                  }
+    238          
+    239                  else
+    240          
+    241                  {
+    242          
+    243                      Timeout = 0xFFFF;
+    244                      /* Send START condition */
+    245                      I2Cx->CR1 |= CR1_START_Set;
+    246                      /* Wait until SB flag is set: EV5 */
+    247                      while ((I2Cx->SR1&0x0001) != 0x0001)
+    248                      {
+    249                          if (Timeout-- == 0)
+    250                              return Error;
+    251                      }
+    252                      Timeout = 0xFFFF;
+    253                      /* Send slave address */
+    254                      /* Reset the address bit0 for write */
+    255                      SlaveAddress |= OAR1_ADD0_Set;;
+    256                      Address = SlaveAddress;
+    257                      /* Send the slave address */
+    258                      I2Cx->DR = Address;
+    259                      /* Wait until ADDR is set: EV6 */
+    260                      while ((I2Cx->SR1&0x0002) != 0x0002)
+    261                      {
+    262                          if (Timeout-- == 0)
+    263                              return Error;
+    264                      }
+    265                      /* Clear ADDR by reading SR2 status register */
+    266                      temp = I2Cx->SR2;
+    267                      /* While there is data to be read */
+    268                      while (NumByteToRead)
+    269                      {
+    270                          /* Receive bytes from first byte until byte N-3 */
+    271                          if (NumByteToRead != 3)
+    272                          {
+    273                              /* Poll on BTF to receive data because in polling mode we can not guarantee the
+    274                              EV7 software sequence is managed before the current byte transfer completes */
+    275                              while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    276                              /* Read data */
+    277                              *pBuffer = I2Cx->DR;
+    278                              /* */
+    279                              pBuffer++;
+    280                              /* Decrement the read bytes counter */
+    281                              NumByteToRead--;
+    282                          }
+    283          
+    284                          /* it remains to read three data: data N-2, data N-1, Data N */
+    285                          if (NumByteToRead == 3)
+    286                          {
+    287          
+    288                              /* Wait until BTF is set: Data N-2 in DR and data N -1 in shift register */
+    289                              while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    290                              /* Clear ACK */
+    291                              I2Cx->CR1 &= CR1_ACK_Reset;
+    292          
+    293                              /* Disable IRQs around data reading and STOP programming because of the
+    294                              limitation ? */
+    295                              __disable_irq();
+    296                              /* Read Data N-2 */
+    297                              *pBuffer = I2Cx->DR;
+    298                              /* Increment */
+    299                              pBuffer++;
+    300                              /* Program the STOP */
+    301                              I2Cx->CR1 |= CR1_STOP_Set;
+    302                              /* Read DataN-1 */
+    303                              *pBuffer = I2Cx->DR;
+    304                              /* Re-enable IRQs */
+    305                              __enable_irq();
+    306                              /* Increment */
+    307                              pBuffer++;
+    308                              /* Wait until RXNE is set (DR contains the last data) */
+    309                              while ((I2Cx->SR1 & 0x00040) != 0x000040);
+    310                              /* Read DataN */
+    311                              *pBuffer = I2Cx->DR;
+    312                              /* Reset the number of bytes to be read by master */
+    313                              NumByteToRead = 0;
+    314          
+    315                          }
+    316                      }
+    317                      /* Make sure that the STOP bit is cleared by Hardware before CR1 write access */
+    318                      while ((I2Cx->CR1&0x200) == 0x200);
+    319                      /* Enable Acknowledgement to be ready for another reception */
+    320                      I2Cx->CR1 |= CR1_ACK_Set;
+    321          
+    322                  }
+    323          
+    324              }
+    325          
+    326              else /* I2Cx Master Reception using Interrupts with highest priority in an application */
+    327              {
+    328                  /* Enable EVT IT*/
+    329                  I2Cx->CR2 |= I2C_IT_EVT;
+    330                  /* Enable BUF IT */
+    331                  I2Cx->CR2 |= I2C_IT_BUF;
+    332                  /* Set the I2C direction to reception */
+    333                  I2CDirection = I2C_DIRECTION_RX;
+    334                  SlaveAddress |= OAR1_ADD0_Set;
+    335                  Address = SlaveAddress;
+    336                  if (I2Cx == I2C1)    NumbOfBytes1 = NumByteToRead;
+    337                  else NumbOfBytes2 = NumByteToRead;
+    338                  /* Send START condition */
+    339                  I2Cx->CR1 |= CR1_START_Set;
+    340                  /* Wait until the START condition is generated on the bus: START bit is cleared by hardware */
+    341                  while ((I2Cx->CR1&0x100) == 0x100);
+    342                  /* Wait until BUSY flag is reset (until a STOP is generated) */
+    343                  while ((I2Cx->SR2 &0x0002) == 0x0002);
+    344                  /* Enable Acknowledgement to be ready for another reception */
+    345                  I2Cx->CR1 |= CR1_ACK_Set;
+    346              }
+    347          
+    348              return Success;
+    349          }
+    350          
+    351          
+    352          
+    353          /**
+    354            * @brief  Writes buffer of bytes.
+    355            * @param pBuffer: Buffer of bytes to be sent to the slave.
+    356            * @param NumByteToWrite: Number of bytes to be sent by the Master.
+    357            * @param Mode: Polling or DMA or Interrupt having the highest priority in the application.
+    358            * @param SlaveAddress: The address of the slave to be addressed by the Master.
+    359            * @retval : None.
+    360            */
+    361          Status I2C_Master_BufferWrite(I2C_TypeDef* I2Cx, uint8_t* pBuffer,  uint32_t NumByteToWrite, I2C_ProgrammingModel Mode, uint8_t SlaveAddress )
+    362          
+    363          {
+    364          
+    365              __IO uint32_t temp = 0;
+    366              __IO uint32_t Timeout = 0;
+    367          
+    368              /* Enable Error IT (used in all modes: DMA, Polling and Interrupts */
+    369              I2Cx->CR2 |= I2C_IT_ERR;
+    370              if (Mode == DMA)  /* I2Cx Master Transmission using DMA */
+    371              {
+    372                  Timeout = 0xFFFF;
+    373                  /* Configure the DMA channel for I2Cx transmission */
+    374                  I2C_DMAConfig (I2Cx, pBuffer, NumByteToWrite, I2C_DIRECTION_TX);
+    375                  /* Enable the I2Cx DMA requests */
+    376                  I2Cx->CR2 |= CR2_DMAEN_Set;
+    377                  /* Send START condition */
+    378                  I2Cx->CR1 |= CR1_START_Set;
+    379                  /* Wait until SB flag is set: EV5 */
+    380                  while ((I2Cx->SR1&0x0001) != 0x0001)
+    381                  {
+    382                      if (Timeout-- == 0)
+    383                          return Error;
+    384                  }
+    385                  Timeout = 0xFFFF;
+    386                  /* Send slave address */
+    387                  /* Reset the address bit0 for write */
+    388                  SlaveAddress &= OAR1_ADD0_Reset;
+    389                  Address = SlaveAddress;
+    390                  /* Send the slave address */
+    391                  I2Cx->DR = Address;
+    392                  /* Wait until ADDR is set: EV6 */
+    393                  while ((I2Cx->SR1&0x0002) != 0x0002)
+    394                  {
+    395                      if (Timeout-- == 0)
+    396                          return Error;
+    397                  }
+    398          
+    399                  /* Clear ADDR flag by reading SR2 register */
+    400                  temp = I2Cx->SR2;
+    401                  if (I2Cx == I2C1)
+    402                  {
+    403                      /* Wait until DMA end of transfer */
+    404                      while (!DMA_GetFlagStatus(DMA1_FLAG_TC6));
+    405                      /* Disable the DMA1 Channel 6 */
+    406                      DMA_Cmd(I2C1_DMA_CHANNEL_TX, DISABLE);
+    407                      /* Clear the DMA Transfer complete flag */
+    408                      DMA_ClearFlag(DMA1_FLAG_TC6);
+    409                  }
+    410                  else  /* I2Cx = I2C2 */
+    411                  {
+    412                      /* Wait until DMA end of transfer */
+    413                      while (!DMA_GetFlagStatus(DMA1_FLAG_TC4));
+    414                      /* Disable the DMA1 Channel 4 */
+    415                      DMA_Cmd(I2C2_DMA_CHANNEL_TX, DISABLE);
+    416                      /* Clear the DMA Transfer complete flag */
+    417                      DMA_ClearFlag(DMA1_FLAG_TC4);
+    418                  }
+    419          
+    420                  /* EV8_2: Wait until BTF is set before programming the STOP */
+    421                  while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    422                  /* Program the STOP */
+    423                  I2Cx->CR1 |= CR1_STOP_Set;
+    424                  /* Make sure that the STOP bit is cleared by Hardware */
+    425                  while ((I2Cx->CR1&0x200) == 0x200);
+    426          
+    427              }
+    428              else if (Mode == Polling) /* I2Cx Master Transmission using Polling */
+    429              {
+    430          
+    431                  Timeout = 0xFFFF;
+    432                  /* Send START condition */
+    433                  I2Cx->CR1 |= CR1_START_Set;
+    434                  /* Wait until SB flag is set: EV5 */
+    435                  while ((I2Cx->SR1&0x0001) != 0x0001)
+    436                  {
+    437                      if (Timeout-- == 0)
+    438                          return Error;
+    439                  }
+    440          
+    441                  /* Send slave address */
+    442                  /* Reset the address bit0 for write*/
+    443                  SlaveAddress &= OAR1_ADD0_Reset;
+    444                  Address = SlaveAddress;
+    445                  /* Send the slave address */
+    446                  I2Cx->DR = Address;
+    447                  Timeout = 0xFFFF;
+    448                  /* Wait until ADDR is set: EV6 */
+    449                  while ((I2Cx->SR1 &0x0002) != 0x0002)
+    450                  {
+    451                      if (Timeout-- == 0)
+    452                          return Error;
+    453                  }
+    454          
+    455                  /* Clear ADDR flag by reading SR2 register */
+    456                  temp = I2Cx->SR2;
+    457                  /* Write the first data in DR register (EV8_1) */
+    458                  I2Cx->DR = *pBuffer;
+    459                  /* Increment */
+    460                  pBuffer++;
+    461                  /* Decrement the number of bytes to be written */
+    462                  NumByteToWrite--;
+    463                  /* While there is data to be written */
+    464                  while (NumByteToWrite--)
+    465                  {
+    466                      /* Poll on BTF to receive data because in polling mode we can not guarantee the
+    467                        EV8 software sequence is managed before the current byte transfer completes */
+    468                      while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    469                      /* Send the current byte */
+    470                      I2Cx->DR = *pBuffer;
+    471                      /* Point to the next byte to be written */
+    472                      pBuffer++;
+    473                  }
+    474                  /* EV8_2: Wait until BTF is set before programming the STOP */
+    475                  while ((I2Cx->SR1 & 0x00004) != 0x000004);
+    476                  /* Send STOP condition */
+    477                  I2Cx->CR1 |= CR1_STOP_Set;
+    478                  /* Make sure that the STOP bit is cleared by Hardware */
+    479                  while ((I2Cx->CR1&0x200) == 0x200);
+    480          
+    481              }
+    482          
+    483              else /* I2Cx Master Transmission using Interrupt with highest priority in the application */
+    484          
+    485              {
+    486                  /* Enable EVT IT*/
+    487                  I2Cx->CR2 |= I2C_IT_EVT;
+    488                  /* Enable BUF IT */
+    489                  I2Cx->CR2 |= I2C_IT_BUF;
+    490                  /* Set the I2C direction to Transmission */
+    491                  I2CDirection = I2C_DIRECTION_TX;
+    492                  SlaveAddress &= OAR1_ADD0_Reset;
+    493                  Address = SlaveAddress;
+    494                  if (I2Cx == I2C1)    NumbOfBytes1 = NumByteToWrite;
+    495                  else NumbOfBytes2 = NumByteToWrite;
+    496                  /* Send START condition */
+    497                  I2Cx->CR1 |= CR1_START_Set;
+    498                  /* Wait until the START condition is generated on the bus: the START bit is cleared by hardware */
+    499                  while ((I2Cx->CR1&0x100) == 0x100);
+    500                  /* Wait until BUSY flag is reset: a STOP has been generated on the bus signaling the end
+    501                  of transmission */
+    502                  while ((I2Cx->SR2 &0x0002) == 0x0002);
+    503              }
+    504          
+    505              return Success;
+    506          
+    507          }
+    508          
+    509          
+    510          /**
+    511            * @brief Prepares the I2Cx slave for transmission.
+    512            * @param I2Cx: I2C1 or I2C2.
+    513            * @param Mode: DMA or Interrupt having the highest priority in the application.
+    514            * @retval : None.
+    515            */
+    516          
+    517          void I2C_Slave_BufferReadWrite(I2C_TypeDef* I2Cx,I2C_ProgrammingModel Mode)
+    518          
+    519          {
+    520              /* Enable Event IT needed for ADDR and STOPF events ITs */
+    521              I2Cx->CR2 |= I2C_IT_EVT ;
+    522              /* Enable Error IT */
+    523              I2Cx->CR2 |= I2C_IT_ERR;
+    524          
+    525              if (Mode == DMA)  /* I2Cx Slave Transmission using DMA */
+    526              {
+    527                  /* Enable I2Cx DMA requests */
+    528                  I2Cx->CR2 |= CR2_DMAEN_Set;
+    529              }
+    530          
+    531              else  /* I2Cx Slave Transmission using Interrupt with highest priority in the application */
+    532              {
+    533                  /* Enable Buffer IT (TXE and RXNE ITs) */
+    534                  I2Cx->CR2 |= I2C_IT_BUF;
+    535          
+    536              }
+    537          
+    538          }
+    539          
+    540          /**
+    541          * @brief  Initializes peripherals: I2Cx, GPIO, DMA channels .
+    542            * @param  None
+    543            * @retval None
+    544            */
+    545          void I2C_LowLevel_Init(I2C_TypeDef* I2Cx)
+    546          {
+    547              GPIO_InitTypeDef  GPIO_InitStructure;
+    548              I2C_InitTypeDef  I2C_InitStructure;
+    549          
+    550              /* GPIOB clock enable */
+    551              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    552              /* Enable the DMA1 clock */
+    553              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    554              if (I2Cx == I2C1)
+    555              {
+    556                  /* I2C1 clock enable */
+    557                  RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+    558                  /* I2C1 SDA and SCL configuration */
+    559                  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    560                  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    561                  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+    562                  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    563          
+    564                  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    565                  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    566          
+    567                  /* Enable I2C1 reset state */
+    568                  RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
+    569                  /* Release I2C1 from reset state */
+    570                  RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
+    571              }
+    572          
+    573              else /* I2Cx = I2C2 */
+    574          
+    575              {
+    576          
+    577                  /* I2C2 clock enable */
+    578                  RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
+    579                  /* I2C1 SDA and SCL configuration */
+    580                  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    581                  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    582                  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+    583                  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    584          
+    585                  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+    586                  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    587          
+    588                  /* Enable I2C2 reset state */
+    589                  RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
+    590                  /* Release I2C2 from reset state */
+    591                  RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
+    592              }
+    593          
+    594              /* I2C1 and I2C2 configuration */
+    595              I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+    596              I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+    597              I2C_InitStructure.I2C_OwnAddress1 = OwnAddress1;
+    598              I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+    599              I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+    600              I2C_InitStructure.I2C_ClockSpeed = ClockSpeed;
+    601              I2C_Init(I2C1, &I2C_InitStructure);
+    602              I2C_InitStructure.I2C_OwnAddress1 = OwnAddress2;
+    603              I2C_Init(I2C2, &I2C_InitStructure);
+    604          
+    605              if (I2Cx == I2C1)
+    606          
+    607              {   /* I2C1 TX DMA Channel configuration */
+    608                  DMA_DeInit(I2C1_DMA_CHANNEL_TX);
+    609                  I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C1_DR_Address;
+    610                  I2CDMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)0;   /* This parameter will be configured durig communication */
+    611                  I2CDMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;    /* This parameter will be configured durig communication */
+    612                  I2CDMA_InitStructure.DMA_BufferSize = 0xFFFF;            /* This parameter will be configured durig communication */
+    613                  I2CDMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    614                  I2CDMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    615                  I2CDMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;
+    616                  I2CDMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    617                  I2CDMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    618                  I2CDMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+    619                  I2CDMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    620                  DMA_Init(I2C1_DMA_CHANNEL_TX, &I2CDMA_InitStructure);
+    621          
+    622                  /* I2C1 RX DMA Channel configuration */
+    623                  DMA_DeInit(I2C1_DMA_CHANNEL_RX);
+    624                  DMA_Init(I2C1_DMA_CHANNEL_RX, &I2CDMA_InitStructure);
+    625              }
+    626          
+    627              else /* I2Cx = I2C2 */
+    628          
+    629              {
+    630                  /* I2C2 TX DMA Channel configuration */
+    631                  DMA_DeInit(I2C2_DMA_CHANNEL_TX);
+    632                  I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C2_DR_Address;
+    633                  I2CDMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)0;   /* This parameter will be configured durig communication */
+    634                  I2CDMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;    /* This parameter will be configured durig communication */
+    635                  I2CDMA_InitStructure.DMA_BufferSize = 0xFFFF;            /* This parameter will be configured durig communication */
+    636                  I2CDMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    637                  I2CDMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    638                  I2CDMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;
+    639                  I2CDMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    640                  I2CDMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    641                  I2CDMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+    642                  I2CDMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    643                  DMA_Init(I2C2_DMA_CHANNEL_TX, &I2CDMA_InitStructure);
+    644          
+    645                  /* I2C2 RX DMA Channel configuration */
+    646                  DMA_DeInit(I2C2_DMA_CHANNEL_RX);
+    647                  DMA_Init(I2C2_DMA_CHANNEL_RX, &I2CDMA_InitStructure);
+    648          
+    649              }
+    650          }
+    651          
+    652          /**
+    653            * @brief  Initializes DMA channel used by the I2C Write/read routines.
+    654            * @param  None.
+    655            * @retval None.
+    656            */
+    657          void I2C_DMAConfig(I2C_TypeDef* I2Cx, uint8_t* pBuffer, uint32_t BufferSize, uint32_t Direction)
+    658          {
+    659              /* Initialize the DMA with the new parameters */
+    660              if (Direction == I2C_DIRECTION_TX)
+    661              {
+    662                  /* Configure the DMA Tx Channel with the buffer address and the buffer size */
+    663                  I2CDMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pBuffer;
+    664                  I2CDMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+    665                  I2CDMA_InitStructure.DMA_BufferSize = (uint32_t)BufferSize;
+    666          
+    667                  if (I2Cx == I2C1)
+    668                  {
+    669                      I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C1_DR_Address;
+    670                      DMA_Cmd(I2C1_DMA_CHANNEL_TX, DISABLE);
+    671                      DMA_Init(I2C1_DMA_CHANNEL_TX, &I2CDMA_InitStructure);
+    672                      DMA_Cmd(I2C1_DMA_CHANNEL_TX, ENABLE);
+    673                  }
+    674                  else
+    675                  {
+    676                      I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C2_DR_Address;
+    677                      DMA_Cmd(I2C2_DMA_CHANNEL_TX, DISABLE);
+    678                      DMA_Init(I2C2_DMA_CHANNEL_TX, &I2CDMA_InitStructure);
+    679                      DMA_Cmd(I2C2_DMA_CHANNEL_TX, ENABLE);
+    680                  }
+    681              }
+    682              else /* Reception */
+    683              {
+    684                  /* Configure the DMA Rx Channel with the buffer address and the buffer size */
+    685                  I2CDMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pBuffer;
+    686                  I2CDMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+    687                  I2CDMA_InitStructure.DMA_BufferSize = (uint32_t)BufferSize;
+    688                  if (I2Cx == I2C1)
+    689                  {
+    690          
+    691                      I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C1_DR_Address;
+    692                      DMA_Cmd(I2C1_DMA_CHANNEL_RX, DISABLE);
+    693                      DMA_Init(I2C1_DMA_CHANNEL_RX, &I2CDMA_InitStructure);
+    694                      DMA_Cmd(I2C1_DMA_CHANNEL_RX, ENABLE);
+    695                  }
+    696          
+    697                  else
+    698                  {
+    699                      I2CDMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)I2C2_DR_Address;
+    700                      DMA_Cmd(I2C2_DMA_CHANNEL_RX, DISABLE);
+    701                      DMA_Init(I2C2_DMA_CHANNEL_RX, &I2CDMA_InitStructure);
+    702                      DMA_Cmd(I2C2_DMA_CHANNEL_RX, ENABLE);
+    703                  }
+    704          
+    705              }
+    706          }
+    707          
+    708          
+    709          
+    710          
+    711          
+    712          /**
+    713            * @}
+    714            */
+    715          
+    716          
+    717          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       24  I2C_DMAConfig
+             24 -> DMA_Cmd
+             24 -> DMA_Init
+       32  I2C_LowLevel_Init
+             32 -> DMA_DeInit
+             32 -> DMA_Init
+             32 -> GPIO_Init
+             32 -> I2C_Init
+             32 -> RCC_AHBPeriphClockCmd
+             32 -> RCC_APB1PeriphClockCmd
+             32 -> RCC_APB1PeriphResetCmd
+             32 -> RCC_APB2PeriphClockCmd
+       32  I2C_Master_BufferRead
+             32 -> DMA_ClearFlag
+             32 -> DMA_Cmd
+             32 -> DMA_GetFlagStatus
+             32 -> I2C_DMAConfig
+             32 -> I2C_GenerateSTOP
+       32  I2C_Master_BufferWrite
+             32 -> DMA_ClearFlag
+             32 -> DMA_Cmd
+             32 -> DMA_GetFlagStatus
+             32 -> I2C_DMAConfig
+        0  I2C_Slave_BufferReadWrite
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable3
+       4  ??DataTable3_1
+       4  ??DataTable3_10
+       4  ??DataTable3_11
+       4  ??DataTable3_12
+       4  ??DataTable3_13
+       4  ??DataTable3_14
+       4  ??DataTable3_2
+       4  ??DataTable3_3
+       4  ??DataTable3_4
+       4  ??DataTable3_5
+       4  ??DataTable3_6
+       4  ??DataTable3_7
+       4  ??DataTable3_8
+       4  ??DataTable3_9
+       1  Address
+    1256  Buffer_Rx1
+    1256  Buffer_Tx1
+      44  I2CDMA_InitStructure
+       4  I2CDirection
+     182  I2C_DMAConfig
+     444  I2C_LowLevel_Init
+     834  I2C_Master_BufferRead
+     464  I2C_Master_BufferWrite
+      46  I2C_Slave_BufferReadWrite
+       4  NumbOfBytes1
+       4  NumbOfBytes2
+
+ 
+ 2 569 bytes in section .bss
+ 2 030 bytes in section .text
+ 
+ 2 030 bytes of CODE memory
+ 2 569 bytes of DATA memory
+
+Errors: none
+Warnings: none

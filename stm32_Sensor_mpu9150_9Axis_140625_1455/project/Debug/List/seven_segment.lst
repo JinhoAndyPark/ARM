@@ -1,0 +1,289 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:07 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\seven_segment.c                                       #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\seven_segment.c -D USE_STDPERIPH_DRIVER -lcN          #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\seven_segment.lst                      #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\seven_segment.o                         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\seven_segment.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : seven_segment.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 08/20/2009
+      8           */
+      9          
+     10          /* Includes */
+     11          
+     12          #include "hw_config.h"
+     13          
+     14          /* functions */
+     15          
+     16          #define GPIO_7_SEG_POWER_PIN    GPIO_Pin_8
+     17          #define GPIO_7_SEG_A_PIN        GPIO_Pin_0
+     18          #define GPIO_7_SEG_B_PIN        GPIO_Pin_1
+     19          #define GPIO_7_SEG_C_PIN        GPIO_Pin_2
+     20          #define GPIO_7_SEG_D_PIN        GPIO_Pin_3
+     21          #define GPIO_7_SEG_E_PIN        GPIO_Pin_4
+     22          #define GPIO_7_SEG_F_PIN        GPIO_Pin_5
+     23          #define GPIO_7_SEG_G_PIN        GPIO_Pin_7
+     24          #define GPIO_7_SEG_DP_PIN       GPIO_Pin_6
+     25          
+     26          #define GPIO_7_SEG              GPIOC
+     27          
+     28          void PowerOn_7_SEG(void)
+     29          {
+     30              GPIO_7_SEG->BRR |= GPIO_7_SEG_POWER_PIN;
+     31          }
+     32          
+     33          void PowerOff_7_SEG(void)
+     34          {
+     35              GPIO_7_SEG->BSRR |= GPIO_7_SEG_POWER_PIN;
+     36          }
+     37          
+     38          void On_7_SEG_OnePin(uint16_t pinNum)
+     39          {
+     40              GPIO_7_SEG->BRR |= pinNum;
+     41          }
+     42          
+     43          void Off_7_SEG_OnePin(uint16_t pinNum)
+     44          {
+     45              GPIO_7_SEG->BSRR |= pinNum;
+     46          }
+     47          
+     48          void On_7_SEG_AllPin(void)
+     49          {
+     50              On_7_SEG_OnePin
+     51                  (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+     52                   | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN
+     53                   | GPIO_7_SEG_G_PIN | GPIO_7_SEG_DP_PIN);
+     54          }
+     55          
+     56          void Off_7_SEG_AllPin(void)
+     57          {
+     58              Off_7_SEG_OnePin
+     59                  (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+     60                   | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN
+     61                   | GPIO_7_SEG_G_PIN | GPIO_7_SEG_DP_PIN);
+     62          }
+     63          
+     64          void OutPut_7_SEG_Number(unsigned int num)
+     65          {
+     66              Off_7_SEG_AllPin();
+     67          
+     68              switch(num)
+     69              {
+     70              case 0:
+     71                  On_7_SEG_OnePin
+     72                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+     73                      | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN);
+     74                  break;
+     75          
+     76              case 1:
+     77                  On_7_SEG_OnePin
+     78                      (GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN);
+     79                  break;
+     80          
+     81              case 2:
+     82                  On_7_SEG_OnePin
+     83                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_D_PIN
+     84                      | GPIO_7_SEG_E_PIN | GPIO_7_SEG_G_PIN);
+     85                  break;
+     86          
+     87              case 3:
+     88                  On_7_SEG_OnePin
+     89                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+     90                      | GPIO_7_SEG_D_PIN | GPIO_7_SEG_G_PIN);
+     91                  break;
+     92          
+     93              case 4:
+     94                  On_7_SEG_OnePin
+     95                      (GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+     96                      | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN);
+     97                  break;
+     98          
+     99              case 5:
+    100                  On_7_SEG_OnePin
+    101                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_C_PIN | GPIO_7_SEG_D_PIN
+    102                      | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN);
+    103                  break;
+    104          
+    105              case 6:
+    106                  On_7_SEG_OnePin
+    107                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_C_PIN | GPIO_7_SEG_D_PIN
+    108                      | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN);
+    109                  break;
+    110          
+    111              case 7:
+    112                  On_7_SEG_OnePin
+    113                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+    114                      | GPIO_7_SEG_F_PIN);
+    115                  break;
+    116          
+    117              case 8:
+    118                  On_7_SEG_OnePin
+    119                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+    120                      | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN | GPIO_7_SEG_F_PIN
+    121                      | GPIO_7_SEG_G_PIN);
+    122                  break;
+    123          
+    124              case 9:
+    125                  On_7_SEG_OnePin
+    126                      (GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN | GPIO_7_SEG_C_PIN
+    127                      | GPIO_7_SEG_D_PIN | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN);
+    128                  break;
+    129              }
+    130          }
+    131          
+    132          void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);
+    133          
+    134          void Seven_Segment_Initilaze(void)
+    135          {
+    136              /******************** Clock Enable ********************/
+    137              /* Enable GPIOC clock */
+    138              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);    
+    139              
+    140              /******************** GPIO configure ********************/
+    141              GPIO_InitTypeDef GPIO_InitStructure;
+    142              
+    143              /* Configure gpio as output : LED1, LED2, LED3 */
+    144              GPIO_InitStructure.GPIO_Pin
+    145                  = GPIO_7_SEG_POWER_PIN | GPIO_7_SEG_A_PIN | GPIO_7_SEG_B_PIN
+    146                    | GPIO_7_SEG_C_PIN | GPIO_7_SEG_D_PIN | GPIO_7_SEG_E_PIN
+    147                    | GPIO_7_SEG_F_PIN | GPIO_7_SEG_G_PIN | GPIO_7_SEG_DP_PIN;
+    148              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    149              GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    150              GPIO_Init(GPIO_7_SEG, &GPIO_InitStructure);    
+    151          }
+    152          
+    153          void Seven_Segment_Test(void)
+    154          {
+    155              int i;
+    156              
+    157              printf("Seven_Segment_Test\n");
+    158          
+    159              PowerOn_7_SEG();
+    160          
+    161              delay_1_second();
+    162              Off_7_SEG_AllPin();
+    163          
+    164              On_7_SEG_OnePin(GPIO_7_SEG_A_PIN);
+    165              delay_1_second();
+    166              On_7_SEG_OnePin(GPIO_7_SEG_B_PIN);
+    167              delay_1_second();
+    168              On_7_SEG_OnePin(GPIO_7_SEG_C_PIN);
+    169              delay_1_second();
+    170              On_7_SEG_OnePin(GPIO_7_SEG_D_PIN);
+    171              delay_1_second();
+    172              On_7_SEG_OnePin(GPIO_7_SEG_E_PIN);
+    173              delay_1_second();
+    174              On_7_SEG_OnePin(GPIO_7_SEG_F_PIN);
+    175              delay_1_second();
+    176              On_7_SEG_OnePin(GPIO_7_SEG_G_PIN);
+    177              delay_1_second();
+    178              On_7_SEG_OnePin(GPIO_7_SEG_DP_PIN);
+    179              delay_1_second();
+    180          
+    181              for(i=0; i<10; i++)
+    182              {
+    183                  OutPut_7_SEG_Number(i);
+    184                  delay_1_second();
+    185              }
+    186          }
+    187          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  Off_7_SEG_AllPin
+             8 -> Off_7_SEG_OnePin
+        0  Off_7_SEG_OnePin
+        8  On_7_SEG_AllPin
+             8 -> On_7_SEG_OnePin
+        0  On_7_SEG_OnePin
+        8  OutPut_7_SEG_Number
+             8 -> Off_7_SEG_AllPin
+             8 -> On_7_SEG_OnePin
+        0  PowerOff_7_SEG
+        0  PowerOn_7_SEG
+        8  Seven_Segment_Initilaze
+             8 -> GPIO_Init
+             8 -> RCC_APB2PeriphClockCmd
+        8  Seven_Segment_Test
+             8 -> Off_7_SEG_AllPin
+             8 -> On_7_SEG_OnePin
+             8 -> OutPut_7_SEG_Number
+             8 -> PowerOn_7_SEG
+             8 -> delay_1_second
+             8 -> printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      20  ?<Constant "Seven_Segment_Test\n">
+       4  ??DataTable5
+       4  ??DataTable5_1
+       4  ??DataTable5_2
+       4  ??DataTable5_3
+      10  Off_7_SEG_AllPin
+      14  Off_7_SEG_OnePin
+      10  On_7_SEG_AllPin
+      14  On_7_SEG_OnePin
+     122  OutPut_7_SEG_Number
+      16  PowerOff_7_SEG
+      16  PowerOn_7_SEG
+      40  Seven_Segment_Initilaze
+     124  Seven_Segment_Test
+
+ 
+  20 bytes in section .rodata
+ 382 bytes in section .text
+ 
+ 382 bytes of CODE  memory
+  20 bytes of CONST memory
+
+Errors: none
+Warnings: none

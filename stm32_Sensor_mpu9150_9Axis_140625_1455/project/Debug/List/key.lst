@@ -1,0 +1,208 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:06 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\key.c                                                 #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\key.c -D USE_STDPERIPH_DRIVER -lcN                    #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\key.lst                                #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\key.o                                   #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\key.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : key.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 08/20/2009
+      8           */
+      9          
+     10          /* Includes */
+     11          
+     12          #include "hw_config.h"
+     13          #include "key.h"
+     14          
+     15          /* functions */
+     16          
+     17          /*
+     18          void LED_On_Red (void);
+     19          void LED_Off_Red (void);
+     20          void LED_On_Yellow (void);
+     21          void LED_Off_Yellow (void);
+     22          void LED_On_Blue (void);
+     23          void LED_Off_Blue (void);
+     24          void LED_On_All (void);
+     25          void LED_Off_All (void);
+     26          */
+     27          
+     28          void KEY_Initialize (void)
+     29          {
+     30              /******************** Clock Enable ********************/
+     31              /* Enable GPIOA clock */
+     32              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);    
+     33              
+     34              /******************** GPIO configure ********************/
+     35              GPIO_InitTypeDef GPIO_InitStructure;
+     36              
+     37              /* Configure gpio as input : Button WKUP & USER */
+     38              GPIO_InitStructure.GPIO_Pin  = GPIO_KEY1_PIN | GPIO_KEY2_PIN;
+     39              GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+     40              GPIO_Init(GPIO_KEY, &GPIO_InitStructure);    
+     41          
+     42              /******************** Fuction configure ********************/
+     43              EXTI_InitTypeDef EXTI_InitStructure;
+     44          
+     45              /* Configure gpio as input : Button Left-WKUP */
+     46              /* Connect EXTI Line to gpio pin */
+     47              GPIO_EXTILineConfig(GPIO_PORTSOURCE_KEY, GPIO_PINSOURCE_KEY1);
+     48          
+     49              /* Configure EXTI Line to generate an interrupt */
+     50              EXTI_InitStructure.EXTI_Line    = GPIO_EXTI_Line_KEY1;
+     51              EXTI_InitStructure.EXTI_Mode    = EXTI_Mode_Interrupt;
+     52              EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+     53              EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+     54              EXTI_Init(&EXTI_InitStructure);
+     55          
+     56              /* Configure gpio as input : Button Right-USER */
+     57              /* Connect EXTI Line to gpio pin */
+     58              GPIO_EXTILineConfig(GPIO_PORTSOURCE_KEY, GPIO_PINSOURCE_KEY2);
+     59          
+     60              /* Configure EXTI Line to generate an interrupt */  
+     61              EXTI_InitStructure.EXTI_Line    = GPIO_EXTI_Line_KEY2;
+     62              EXTI_InitStructure.EXTI_Mode    = EXTI_Mode_Interrupt;
+     63              EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+     64              EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+     65              EXTI_Init(&EXTI_InitStructure);      
+     66              
+     67              /******************** Interrupt configure ********************/
+     68              NVIC_InitTypeDef NVIC_InitStructure;
+     69          
+     70              /* Enable the EXTI0 Interrupt */
+     71              NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+     72              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+     73              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+     74              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+     75              NVIC_Init(&NVIC_InitStructure);
+     76          
+     77              /* Enable the EXTI1 Interrupt */
+     78              NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
+     79              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+     80              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+     81              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+     82              NVIC_Init(&NVIC_InitStructure);    
+     83            
+     84          }
+     85          
+     86          void KEY_Test (void)
+     87          {
+     88              uint32_t i = 0;
+     89          
+     90              LED_Off_All();
+     91          
+     92              while(1)
+     93              {
+     94                  delay_100_milli_second();
+     95          
+     96                  if((i++ & 0x1) == 0x0)
+     97                  {
+     98                      LED_On_Blue();
+     99                  }
+    100                  else
+    101                  {
+    102                      LED_Off_Blue();
+    103                  }
+    104          
+    105                  if(GPIO_ReadInputDataBit(GPIO_KEY, GPIO_KEY1_PIN) == Bit_SET)
+    106                  {
+    107                      LED_On_Red();
+    108                  }
+    109                  else
+    110                  {
+    111                      LED_Off_Red();
+    112                  }
+    113          
+    114                  if(GPIO_ReadInputDataBit(GPIO_KEY, GPIO_KEY2_PIN) == Bit_SET)
+    115                  {
+    116                      LED_On_Yellow();
+    117                  }
+    118                  else
+    119                  {
+    120                      LED_Off_Yellow();
+    121                  }
+    122              }
+    123          }
+    124          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       24  KEY_Initialize
+             24 -> EXTI_Init
+             24 -> GPIO_EXTILineConfig
+             24 -> GPIO_Init
+             24 -> NVIC_Init
+             24 -> RCC_APB2PeriphClockCmd
+        8  KEY_Test
+              8 -> GPIO_ReadInputDataBit
+              8 -> LED_Off_All
+              8 -> LED_Off_Blue
+              8 -> LED_Off_Red
+              8 -> LED_Off_Yellow
+              8 -> LED_On_Blue
+              8 -> LED_On_Red
+              8 -> LED_On_Yellow
+              8 -> delay_100_milli_second
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+     168  KEY_Initialize
+      76  KEY_Test
+
+ 
+ 248 bytes in section .text
+ 
+ 248 bytes of CODE memory
+
+Errors: none
+Warnings: none

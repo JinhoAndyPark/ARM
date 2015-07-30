@@ -1,0 +1,322 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\board_detect.c                                        #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\board_detect.c -D USE_STDPERIPH_DRIVER -lcN           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\board_detect.lst                       #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\board_detect.o                          #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\board_detect.c
+      1          /*
+      2           * (C) COPYRIGHT 2011 CRZ
+      3           *
+      4           * File Name : board_detect.c
+      5           * 
+      6           * History 
+      7           *
+      8           * when         who       what, where, why
+      9           *--------------------------------------------------------------
+     10           * 09/29/2011   sikim     Initial release
+     11           */
+     12          
+     13          /* includes */
+     14          
+     15          #include "hw_config.h"
+     16          
+     17          /* Local Defines */
+     18          #define ADC1_DR_Address    ((uint32_t)0x4001244C)
+     19          #define BOARD_TYPE_MAX      31
+     20          
+     21          /* Local Variables */
+     22          
+     23          /*
+     24              12 bit adc resolution is 4096
+     25              3.3V / 4096 = 0.0008056640625 V
+     26          
+     27              J Class resistance 9000 ohm -> 9450 ~ 8550
+     28              J Class resistance 1000 ohm -> 950  ~ 1050 
+     29          
+     30              3.3V X ( 1050 / 10500 ) = 0.33V
+     31              3.3V X ( 950  / 10400 ) = 0.301V
+     32              3.3V X ( 1050 / 9600  ) = 0.3609V
+     33              3.3V X ( 950  / 9500  ) = 0.33V
+     34          
+     35              Max Error -0.03V ~ + 0.03V
+     36          
+     37              Max Sensor Board is 30 Class
+     38          
+     39              0   V	device 1    0     ~ 0.03V
+     40              0.11V	device 2    0.08V ~ 0.14V
+     41              0.22V	device 3    0.19V ~ 0.25V
+     42               .	 .
+     43               .	 .
+     44               .	 .
+     45               
+     46          */
+     47          static float BoardClass[BOARD_TYPE_MAX][3];
+     48          
+     49          /* Local Global Variables */
+     50          __IO uint16_t BoardDetectValue;
+     51          char *BoardType[BOARD_TYPE_MAX] = { 
+     52                                                 "TEST ", // 0    0 V
+     53                                                  "TEST",      // 1    0.11V
+     54                                                  "TEST",      // 2    0.22V
+     55                                                  "3-Axis ACC Sensor Board with Temp",     // 3    0.33 V
+     56                                                  "TEST",     // 4                                        
+     57                                                  "TEST",     // 5                                        
+     58                                                  "Pressure Sensor Board with Temp",     // 6     0.66 V
+     59                                                  "TEST",     // 7                                       
+     60                                                  "Light Sensor Board",     // 8        0.88 V
+     61                                                  "TEST",     // 9                                        
+     62                                                  "TEST",     // 10
+     63                                                  "TEST",     // 11
+     64                                                  "Remocon Sensor Board",     // 12
+     65                                                  "TEST",     // 13    
+     66                                                  "TEST",     // 14
+     67                                                  "TEST",     // 15                                        
+     68                                                  "TEST",     // 16                                        
+     69                                                  "TEST",     // 17
+     70                                                  "Gyro Sensor Board",     // 18                                      
+     71                                                  "TEST",     // 19                                        
+     72                                                  "MPU 9150 9 Axis Sensor Board",     // 20                                        
+     73                                                  "TEST",     // 21                                       
+     74                                                  "TEST",     // 22
+     75                                                  "TEST",     // 23 
+     76                                                  "TEST",     // 24    
+     77                                                  "TEST",     // 25
+     78                                                  "TEST",     // 26                                        
+     79                                                  "Humidity Sensro Board",     // 27                                        
+     80                                                  "TEST",     // 28
+     81                                                  "TEST",     // 29                                       
+     82                                                  "TEST"      // 30                                        
+     83                                                  };
+     84          
+     85          /*
+     86           * Description : none.
+     87           * Argument(s) : none.
+     88           * Return(s)   : none.
+     89           * Note(s)     : none.
+     90           */
+     91          void board_detect(void)
+     92          {
+     93              uint32_t nLoop;
+     94              float volt=0.0;
+     95          
+     96              /* Initialize Board Class */
+     97              for( nLoop = 0; nLoop < BOARD_TYPE_MAX; nLoop++)
+     98              {
+     99                  BoardClass[nLoop][0] = 0 + (0.11*nLoop);
+    100                  BoardClass[nLoop][1] = BoardClass[nLoop][0] - 0.03;        
+    101                  BoardClass[nLoop][2] = BoardClass[nLoop][0] + 0.03;        
+    102              }
+    103              BoardClass[0][1] = 0.0;        
+    104              BoardClass[BOARD_TYPE_MAX-1][2] = (float)3.3;        
+    105          
+    106              /* Convert AD value to Volt */
+    107              volt = (float)(BoardDetectValue * 3.3)/(float) 4095;
+    108          #if 0
+    109              printf("volt [ %f ]\n", volt);    
+    110          #endif
+    111          
+    112              for( nLoop = 0; nLoop < BOARD_TYPE_MAX; nLoop++)
+    113              {
+    114                  if( BoardClass[nLoop][1] < volt )
+    115                      if( volt < BoardClass[nLoop][2] )
+    116                      {
+    117                          printf("Board Type : %s\n", BoardType[nLoop]);
+    118                          break;
+    119                      }
+    120              }
+    121          }
+    122          
+    123          
+    124          /*
+    125           * Description : none.
+    126           * Argument(s) : none.
+    127           * Return(s)   : none.
+    128           * Note(s)     : none.
+    129           */
+    130          void board_detect_initialzie(void)
+    131          {
+    132              GPIO_InitTypeDef GPIO_InitStructure;  
+    133              DMA_InitTypeDef DMA_InitStructure;    
+    134              ADC_InitTypeDef ADC_InitStructure;    
+    135          
+    136              /******************** Clock Enable ********************/
+    137              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);  
+    138              RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);    
+    139              RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+    140              RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    141                  
+    142              /******************** GPIO configure ********************/
+    143              GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_6;
+    144              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    145              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
+    146              GPIO_Init(GPIOA, &GPIO_InitStructure);          
+    147          
+    148              /******************** DMA configure ********************/        
+    149              DMA_DeInit(DMA1_Channel1);
+    150              DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
+    151              DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&BoardDetectValue;
+    152              DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+    153              DMA_InitStructure.DMA_BufferSize = 1;
+    154              DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    155              DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
+    156              DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    157              DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    158              DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    159              DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    160              DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    161              DMA_Init(DMA1_Channel1, &DMA_InitStructure);
+    162              DMA_Cmd(DMA1_Channel1, ENABLE);
+    163              
+    164              /******************** Fuction configure ********************/
+    165              ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+    166              ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+    167              ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+    168              ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+    169              ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+    170              ADC_InitStructure.ADC_NbrOfChannel = 1;
+    171              ADC_Init(ADC1, &ADC_InitStructure);
+    172          
+    173              /* ADC1 regular channel14 configuration */ 
+    174              ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_55Cycles5);    
+    175              
+    176              /* Enable ADC1 DMA */
+    177              ADC_DMACmd(ADC1, ENABLE);    
+    178          
+    179              /* Enable ADC1 */
+    180              ADC_Cmd(ADC1, ENABLE);    
+    181          
+    182              /* Enable ADC1 reset calibaration register */   
+    183              ADC_ResetCalibration(ADC1);
+    184              
+    185              /* Check the end of ADC1 reset calibration register */
+    186              while(ADC_GetResetCalibrationStatus(ADC1));
+    187          
+    188              /* Start ADC1 calibaration */
+    189              ADC_StartCalibration(ADC1);
+    190              /* Check the end of ADC1 calibration */
+    191              while(ADC_GetCalibrationStatus(ADC1));
+    192               
+    193              /* Start ADC1 Software Conversion */ 
+    194              ADC_SoftwareStartConvCmd(ADC1, ENABLE);    
+    195          }
+    196          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       16  board_detect
+             16 -> __aeabi_cfcmple
+             16 -> __aeabi_d2f
+             16 -> __aeabi_dadd
+             16 -> __aeabi_dmul
+             16 -> __aeabi_f2d
+             16 -> __aeabi_fdiv
+             16 -> __aeabi_ui2d
+             16 -> printf
+       72  board_detect_initialzie
+             72 -> ADC_Cmd
+             72 -> ADC_DMACmd
+             72 -> ADC_GetCalibrationStatus
+             72 -> ADC_GetResetCalibrationStatus
+             72 -> ADC_Init
+             72 -> ADC_RegularChannelConfig
+             72 -> ADC_ResetCalibration
+             72 -> ADC_SoftwareStartConvCmd
+             72 -> ADC_StartCalibration
+             72 -> DMA_Cmd
+             72 -> DMA_DeInit
+             72 -> DMA_Init
+             72 -> GPIO_Init
+             72 -> RCC_AHBPeriphClockCmd
+             72 -> RCC_APB2PeriphClockCmd
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      36  ?<Constant "3-Axis ACC Sensor Boa...">
+      20  ?<Constant "Board Type : %s\n">
+      20  ?<Constant "Gyro Sensor Board">
+      24  ?<Constant "Humidity Sensro Board">
+      20  ?<Constant "Light Sensor Board">
+      32  ?<Constant "MPU 9150 9 Axis Senso...">
+      32  ?<Constant "Pressure Sensor Board...">
+      24  ?<Constant "Remocon Sensor Board">
+       8  ?<Constant "TEST ">
+       8  ?<Constant "TEST">
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_10
+       4  ??DataTable1_11
+       4  ??DataTable1_12
+       4  ??DataTable1_13
+       4  ??DataTable1_14
+       4  ??DataTable1_15
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       4  ??DataTable1_6
+       4  ??DataTable1_7
+       4  ??DataTable1_8
+       4  ??DataTable1_9
+     372  BoardClass
+       2  BoardDetectValue
+     124  BoardType
+     224  board_detect
+     248  board_detect_initialzie
+
+ 
+ 374 bytes in section .bss
+ 124 bytes in section .data
+ 224 bytes in section .rodata
+ 536 bytes in section .text
+ 
+ 536 bytes of CODE  memory
+ 224 bytes of CONST memory
+ 498 bytes of DATA  memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\..\M32.Src001.LedOn\project\IAR\HStory2.0.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\..\M32.Src006.LedAllOnOff.New1\project\IAR\HStory2.0.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\KeyPress.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\..\M32.Src007.LedAllOnOff.New2\project\IAR\new2.ewp</path>
+  </project>
+  <batchBuild/>
+</workspace>
+
+

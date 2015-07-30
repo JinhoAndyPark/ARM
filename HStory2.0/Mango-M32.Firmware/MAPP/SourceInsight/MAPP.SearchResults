@@ -1,0 +1,24 @@
+---- move Matches (26 in 9 files) ----
+Core_cm3.c (library\cmsis\cm3\coresupport): * @brief  Remove the exclusive lock created by ldrex
+Core_cm3.c (library\cmsis\cm3\coresupport): * Removes the exclusive lock which is created by ldrex.
+Core_cm3.h (library\cmsis\cm3\coresupport): * @brief  Remove the exclusive lock created by ldrex
+Core_cm3.h (library\cmsis\cm3\coresupport): * Removes the exclusive lock which is created by ldrex.
+Core_cm3.h (library\cmsis\cm3\coresupport): * @brief  Remove the exclusive lock created by ldrex
+Core_cm3.h (library\cmsis\cm3\coresupport): * Removes the exclusive lock which is created by ldrex.
+Hw_config.h (src):void Right_Move(U8 Dir);
+Hw_config.h (src):void Left_Move(U8 Dir);
+Main.c (src):			Move(Forward);
+Main.c (src):			Move(Backward);
+Main.c (src):void Right_Move(U8 Dir)
+Main.c (src):void Left_Move(U8 Dir)
+PID_Controller.c (src):       Right_Move(Backward) Left_Move(Forward);    //4th MCU
+PID_Controller.c (src):        Right_Move(Forward) Left_Move(Backward);       //4th MCU
+Release_Notes.html (library\cmsis\cm3\devicesupport\st\stm32f10x):</span>and <span style="font-style: italic;">startup_stm32f10x_hd_vl.s</span> files: remove the FSMC interrupt
+Release_Notes.html (library\cmsis\cm3\devicesupport\st\stm32f10x):                <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: &quot;Verdana&quot;,&quot;sans-serif&quot;;">"<span style="font-weight: bold;">bool</span>" type removed.</span><br>
+Release_Notes.html (library\cmsis\cm3\devicesupport\st\stm32f10x):<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;"><span style="font-weight: bold; font-style: italic;">"system_stm32f10x.c" </span><span style="font-weight: bold;"></span>moved to to "<span style="font-weight: bold; font-style: italic;">STM32F10x_StdPeriph_Template</span>" directory. This file is also moved to each example directory under "<span style="font-weight: bold; font-style: italic;">STM32F10x_StdPeriph_Examples</span>".</span><br>
+Release_Notes.html (library\cmsis\cm3\devicesupport\st\stm32f10x):              </li><ul><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Update to support XL-density devices</span><span style="font-size: 10pt; font-family: Verdana;"></span></li><ul><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add new define <span style="font-style: italic;">STM32F10X_XL</span></span></li></ul><ul><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add new IRQs for&nbsp;</span><span style="font-size: 10pt; font-family: Verdana;">TIM9..14</span></li><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Update FLASH_TypeDef structure</span></li><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add new IP instances TIM9..14</span></li><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">RCC, AFIO, DBGMCU bits definition updated</span></li></ul><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Correct IRQs definition for MD-, LD-, MD_VL- and LD_VL-density devices&nbsp;(remove&nbsp;comma "," at the end of enum list)<br></span></li></ul><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;"><span style="text-decoration: underline;">STM32F10x CMSIS Cortex-M3 Device Peripheral Access Layer System Files:</span> <span style="font-weight: bold; font-style: italic;">system_stm32f10x.h and system_stm32f10x.c</span></span><br>
+Release_Notes.html (library\cmsis\cm3\devicesupport\st\stm32f10x):                <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">All while(1) loop were removed from all clock setting functions. User has to handle the HSE startup failure.<br>
+Stm32f10x.h (library\cmsis\cm3\devicesupport\st\stm32f10x):#define  RCC_CSR_RMVF                        ((uint32_t)0x01000000)        /*!< Remove reset flag */
+Stm32f10x_it.c (src):		Move(Forward);
+Stm32f10x_it.c (src):		Move(Backward);		
+Stm32f10x_spi.c (library\stm32f10x_stdperiph_driver\src):    /* Remove the floating point */

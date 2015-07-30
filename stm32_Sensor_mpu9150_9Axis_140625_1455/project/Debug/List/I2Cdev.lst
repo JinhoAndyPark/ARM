@@ -1,0 +1,300 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:03 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\S #
+#                    ensor9Axis\I2Cdev.cpp                                    #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\S #
+#                    ensor9Axis\I2Cdev.cpp -D USE_STDPERIPH_DRIVER -lcN       #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On --eec++ -I "C:\Program Files (x86)\IAR               #
+#                    Systems\Embedded Workbench 6.0_0\arm\CMSIS\Include\"     #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\I2Cdev.lst                             #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\I2Cdev.o                                #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\Sensor9Axis\I2Cdev.cpp
+      1          // I2Cdev library collection - Main I2C device class
+      2          // Abstracts bit and byte I2C R/W functions into a convenient class
+      3          // 6/9/2012 by Jeff Rowberg <jeff@rowberg.net>
+      4          //
+      5          // Changelog:
+      6          //     2012-06-09 - fix major issue with reading > 32 bytes at a time with Arduino Wire
+      7          //                - add compiler warnings when using outdated or IDE or limited I2Cdev implementation
+      8          //     2011-11-01 - fix write*Bits mask calculation (thanks sasquatch @ Arduino forums)
+      9          //     2011-10-03 - added automatic Arduino version detection for ease of use
+     10          //     2011-10-02 - added Gene Knight's NBWire TwoWire class implementation with small modifications
+     11          //     2011-08-31 - added support for Arduino 1.0 Wire library (methods are different from 0.x)
+     12          //     2011-08-03 - added optional timeout parameter to read* methods to easily change from default
+     13          //     2011-08-02 - added support for 16-bit registers
+     14          //                - fixed incorrect Doxygen comments on some methods
+     15          //                - added timeout value for read operations (thanks mem @ Arduino forums)
+     16          //     2011-07-30 - changed read/write function structures to return success or byte counts
+     17          //                - made all methods static for multi-device memory savings
+     18          //     2011-07-28 - initial release
+     19          
+     20          /* ============================================
+     21          I2Cdev device library code is placed under the MIT license
+     22          Copyright (c) 2012 Jeff Rowberg
+     23          
+     24          Permission is hereby granted, free of charge, to any person obtaining a copy
+     25          of this software and associated documentation files (the "Software"), to deal
+     26          in the Software without restriction, including without limitation the rights
+     27          to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     28          copies of the Software, and to permit persons to whom the Software is
+     29          furnished to do so, subject to the following conditions:
+     30          
+     31          The above copyright notice and this permission notice shall be included in
+     32          all copies or substantial portions of the Software.
+     33          
+     34          THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     35          IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     36          FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+     37          AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     38          LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     39          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+     40          THE SOFTWARE.
+     41          ===============================================
+     42          */
+     43          
+     44          #include "I2Cdev.h"
+     45          #include "test_sensor9axis.h"
+     46          
+     47          /** Default constructor.
+     48           */
+     49          I2Cdev::I2Cdev() {
+     50          }
+     51          
+     52          /** Read a single bit from an 8-bit device register.
+     53           * @param devAddr I2C slave device address
+     54           * @param regAddr Register regAddr to read from
+     55           * @param bitNum Bit position to read (0-7)
+     56           * @param data Container for single bit value
+     57           * @param timeout Optional read timeout in milliseconds (0 to disable, leave off to use default class value in I2Cdev::readTimeout)
+     58           * @return Status of read operation (true = success)
+     59           */
+     60          int8_t I2Cdev::readBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout) {
+     61              uint8_t b;
+     62              uint8_t count = readByte(devAddr, regAddr, &b, timeout);
+     63              *data = b & (1 << bitNum);
+     64              return count;
+     65          }
+     66          
+     67          /** Read multiple bits from an 8-bit device register.
+     68           * @param devAddr I2C slave device address
+     69           * @param regAddr Register regAddr to read from
+     70           * @param bitStart First bit position to read (0-7)
+     71           * @param length Number of bits to read (not more than 8)
+     72           * @param data Container for right-aligned value (i.e. '101' read from any bitStart position will equal 0x05)
+     73           * @param timeout Optional read timeout in milliseconds (0 to disable, leave off to use default class value in I2Cdev::readTimeout)
+     74           * @return Status of read operation (true = success)
+     75           */
+     76          int8_t I2Cdev::readBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout) {
+     77              // 01101001 read byte
+     78              // 76543210 bit numbers
+     79              //    xxx   args: bitStart=4, length=3
+     80              //    010   masked
+     81              //   -> 010 shifted
+     82              uint8_t count, b;
+     83              if ((count = readByte(devAddr, regAddr, &b, timeout)) != 0) {
+     84                  uint8_t mask = ((1 << length) - 1) << (bitStart - length + 1);
+     85                  b &= mask;
+     86                  b >>= (bitStart - length + 1);
+     87                  *data = b;
+     88              }
+     89              return count;
+     90          }
+     91          
+     92          /** Read single byte from an 8-bit device register.
+     93           * @param devAddr I2C slave device address
+     94           * @param regAddr Register regAddr to read from
+     95           * @param data Container for byte value read from device
+     96           * @param timeout Optional read timeout in milliseconds (0 to disable, leave off to use default class value in I2Cdev::readTimeout)
+     97           * @return Status of read operation (true = success)
+     98           */
+     99          int8_t I2Cdev::readByte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout) {
+    100              return readBytes(devAddr, regAddr, 1, data, timeout);
+    101          }
+    102          
+    103          /** Read multiple bytes from an 8-bit device register.
+    104           * @param devAddr I2C slave device address
+    105           * @param regAddr First register regAddr to read from
+    106           * @param length Number of bytes to read
+    107           * @param data Buffer to store read data in
+    108           * @param timeout Optional read timeout in milliseconds (0 to disable, leave off to use default class value in I2Cdev::readTimeout)
+    109           * @return Number of bytes read (-1 indicates failure)
+    110           */
+    111          int8_t I2Cdev::readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout) {
+    112              return SENSOR9AXIS_Read_Bytes(devAddr, regAddr, length, data);
+    113          }
+    114          
+    115          /** write a single bit in an 8-bit device register.
+    116           * @param devAddr I2C slave device address
+    117           * @param regAddr Register regAddr to write to
+    118           * @param bitNum Bit position to write (0-7)
+    119           * @param value New bit value to write
+    120           * @return Status of operation (true = success)
+    121           */
+    122          bool I2Cdev::writeBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data) {
+    123              uint8_t b;
+    124              readByte(devAddr, regAddr, &b);
+    125              b = (data != 0) ? (b | (1 << bitNum)) : (b & ~(1 << bitNum));
+    126              return writeByte(devAddr, regAddr, b);
+    127          }
+    128          
+    129          /** Write multiple bits in an 8-bit device register.
+    130           * @param devAddr I2C slave device address
+    131           * @param regAddr Register regAddr to write to
+    132           * @param bitStart First bit position to write (0-7)
+    133           * @param length Number of bits to write (not more than 8)
+    134           * @param data Right-aligned value to write
+    135           * @return Status of operation (true = success)
+    136           */
+    137          bool I2Cdev::writeBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data) {
+    138              //      010 value to write
+    139              // 76543210 bit numbers
+    140              //    xxx   args: bitStart=4, length=3
+    141              // 00011100 mask byte
+    142              // 10101111 original value (sample)
+    143              // 10100011 original & ~mask
+    144              // 10101011 masked | value
+    145              uint8_t b;
+    146              if (readByte(devAddr, regAddr, &b) != 0) {
+    147                  uint8_t mask = ((1 << length) - 1) << (bitStart - length + 1);
+    148                  data <<= (bitStart - length + 1); // shift data into correct position
+    149                  data &= mask; // zero all non-important bits in data
+    150                  b &= ~(mask); // zero all important bits in existing byte
+    151                  b |= data; // combine data with existing byte
+    152                  return writeByte(devAddr, regAddr, b);
+    153              } else {
+    154                  return false;
+    155              }
+    156          }
+    157          
+    158          /** Write single byte to an 8-bit device register.
+    159           * @param devAddr I2C slave device address
+    160           * @param regAddr Register address to write to
+    161           * @param data New byte value to write
+    162           * @return Status of operation (true = success)
+    163           */
+    164          bool I2Cdev::writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data) {
+    165              return writeBytes(devAddr, regAddr, 1, &data);
+    166          }
+    167          
+    168          /** Write single word to a 16-bit device register.
+    169           * @param devAddr I2C slave device address
+    170           * @param regAddr Register address to write to
+    171           * @param data New word value to write
+    172           * @return Status of operation (true = success)
+    173           */
+    174          bool I2Cdev::writeWord(uint8_t devAddr, uint8_t regAddr, uint16_t data) {
+    175              uint8_t tmpData[2];
+    176          
+    177              tmpData[0] = (data >> 8) & 0xFF; /* MSB */
+    178              tmpData[1] = data & 0xFF; /* MSB */
+    179          
+    180              return writeBytes(devAddr, regAddr, 2, tmpData);
+    181          }
+    182          
+    183          /** Write multiple bytes to an 8-bit device register.
+    184           * @param devAddr I2C slave device address
+    185           * @param regAddr First register address to write to
+    186           * @param length Number of bytes to write
+    187           * @param data Buffer to copy new data from
+    188           * @return Status of operation (true = success)
+    189           */
+    190          bool I2Cdev::writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t* data) {
+    191              int8_t retVal;
+    192          
+    193              retVal = SENSOR9AXIS_Write_Bytes(devAddr, regAddr, length, data);
+    194              if(retVal < 0)
+    195              {
+    196                  return false;
+    197              }
+    198          
+    199              return true;
+    200          }
+    201          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  I2Cdev::I2Cdev()
+       32  I2Cdev::readBit(uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+             32 -> I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+       40  I2Cdev::readBits(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+             40 -> I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+       24  I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+             24 -> I2Cdev::readBytes(uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+       24  I2Cdev::readBytes(uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+             24 -> SENSOR9AXIS_Read_Bytes
+        8  I2Cdev::subobject I2Cdev()
+              8 -> I2Cdev::I2Cdev()
+       24  I2Cdev::writeBit(uint8_t, uint8_t, uint8_t, uint8_t)
+             24 -> I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+             24 -> I2Cdev::writeByte(uint8_t, uint8_t, uint8_t)
+       32  I2Cdev::writeBits(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)
+             32 -> I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+             32 -> I2Cdev::writeByte(uint8_t, uint8_t, uint8_t)
+       16  I2Cdev::writeByte(uint8_t, uint8_t, uint8_t)
+             16 -> I2Cdev::writeBytes(uint8_t, uint8_t, uint8_t, uint8_t *)
+       24  I2Cdev::writeBytes(uint8_t, uint8_t, uint8_t, uint8_t *)
+             24 -> SENSOR9AXIS_Write_Bytes
+       24  I2Cdev::writeWord(uint8_t, uint8_t, uint16_t)
+             24 -> I2Cdev::writeBytes(uint8_t, uint8_t, uint8_t, uint8_t *)
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  I2Cdev::I2Cdev()
+      54  I2Cdev::readBit(uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+     104  I2Cdev::readBits(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+      32  I2Cdev::readByte(uint8_t, uint8_t, uint8_t *, uint16_t)
+      38  I2Cdev::readBytes(uint8_t, uint8_t, uint8_t, uint8_t *, uint16_t)
+      12  I2Cdev::subobject I2Cdev()
+      78  I2Cdev::writeBit(uint8_t, uint8_t, uint8_t, uint8_t)
+     112  I2Cdev::writeBits(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)
+      24  I2Cdev::writeByte(uint8_t, uint8_t, uint8_t)
+      52  I2Cdev::writeBytes(uint8_t, uint8_t, uint8_t, uint8_t *)
+      42  I2Cdev::writeWord(uint8_t, uint8_t, uint16_t)
+
+ 
+ 550 bytes in section .text
+ 
+ 550 bytes of CODE memory
+
+Errors: none
+Warnings: none

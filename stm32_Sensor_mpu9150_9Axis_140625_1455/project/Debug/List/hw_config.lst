@@ -1,0 +1,804 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:08 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\hw_config.c                                           #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\s #
+#                    rc\hw_config.c -D USE_STDPERIPH_DRIVER -lcN              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ -lb D:\zWk.Src\Mango-M32-MPU-9150\m32 #
+#                    _Sensor_mpu9150_9Axis\project\Debug\List\                #
+#                    --diag_suppress Pe549,Pa082 -o                           #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\hw_config.lst                          #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\hw_config.o                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\src\hw_config.c
+      1          /*
+      2           * (C) COPYRIGHT 2009 CRZ
+      3           *
+      4           * File Name : hw_config.c
+      5           * Author    : POOH
+      6           * Version   : V1.0
+      7           * Date      : 08/12/2009
+      8           */
+      9          
+     10          /* includes */
+     11          
+     12          #include "hw_config.h"
+     13          #include "hw_types.h"
+     14          #include "uart_queue.h"
+     15          #include "usb_lib.h"
+     16          #include "usb_pwr.h"
+     17          #include "usb_istr.h"
+     18          #include "usb_desc.h"
+     19          
+     20          /* defines */
+     21          
+     22          #ifdef __GNUC__
+     23            #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+     24          #else
+     25            #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+     26          #endif /* __GNUC__ */
+     27          
+     28          /* global variables */
+     29          
+     30          uint32_t ADC_ConvertedValueX = 0;
+     31          uint32_t ADC_ConvertedValueX_1 = 0;
+     32          static volatile uint32_t TimingDelay;
+     33          
+     34          extern  __IO uint32_t bDeviceState; /* USB device status */
+     35          
+     36          /* functions */
+     37          
+     38          void delay_1_second(void)
+     39          {
+     40              Delay(1000);
+     41          }
+     42          
+     43          void delay_100_milli_second(void)
+     44          {
+     45              Delay(100);
+     46          }
+     47          
+     48          /*
+     49           * Name   : USART1_Init_forSerial
+     50           * Input  : None
+     51           * Output : None
+     52           * Return : None
+     53           */
+     54          void USART1_Init_forSerial(void)
+     55          {
+     56              USART_InitTypeDef USART_InitStructure;
+     57          
+     58              /* USARTx configuration ------------------------------------------------------*/
+     59              /* USARTx configured as follow:
+     60               - BaudRate = 115200 baud  
+     61               - Word Length = 8 Bits
+     62               - One Stop Bit
+     63               - No parity
+     64               - Hardware flow control disabled (RTS and CTS signals)
+     65               - Receive and transmit enabled
+     66               */
+     67              USART_InitStructure.USART_BaudRate   = 115200;
+     68              USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+     69              USART_InitStructure.USART_StopBits   = USART_StopBits_1;
+     70              USART_InitStructure.USART_Parity     = USART_Parity_No ;
+     71              USART_InitStructure.USART_HardwareFlowControl
+     72                                                   = USART_HardwareFlowControl_None;
+     73              USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
+     74          
+     75              /* Configure the USARTx */ 
+     76              USART_Init(USART1, &USART_InitStructure);
+     77          
+     78              /* Enable Receive interrupts */
+     79              USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+     80          
+     81              /* Enable the USART1 */
+     82              USART_Cmd(USART1, ENABLE);
+     83          }
+     84          
+     85          /*
+     86           * Name   : USART2_Init_forComm
+     87           * Input  : None
+     88           * Output : None
+     89           * Return : None
+     90           */
+     91          void USART2_Init_forComm(void)
+     92          {
+     93              USART_InitTypeDef USART_InitStructure;
+     94          
+     95              //USART_InitStructure.USART_BaudRate   = 115200;
+     96              USART_InitStructure.USART_BaudRate = 500000;
+     97              USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+     98              USART_InitStructure.USART_StopBits   = USART_StopBits_1;
+     99              USART_InitStructure.USART_Parity     = USART_Parity_No ;
+    100              USART_InitStructure.USART_HardwareFlowControl
+    101                                                   = USART_HardwareFlowControl_None;
+    102              USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
+    103          
+    104              /* Configure the USARTx */ 
+    105              USART_Init(USART2, &USART_InitStructure);
+    106          
+    107              /* Enable Receive interrupts */
+    108              USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+    109          
+    110              /* Enable the USART2 */
+    111              USART_Cmd(USART2, ENABLE);
+    112          }
+    113          
+    114          /*
+    115           * Name   : RCC_Configuration
+    116           * Input  : None
+    117           * Output : None
+    118           * Return : None
+    119           */
+    120          void RCC_Configuration(void)
+    121          {
+    122              SystemInit();
+    123          
+    124              /* Enable GPIOA clock */
+    125              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    126          
+    127              /* Enable GPIOB clock */
+    128              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    129          
+    130              /* Enable GPIOC clock */
+    131              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    132          
+    133              /* Enable GPIOD clock */
+    134              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+    135          
+    136              /* Enable GPIOE clock */
+    137              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+    138          
+    139              /* Enable USART1 clocks */
+    140              RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    141              /* Enable USART2 clocks */
+    142          //    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE); 
+    143          
+    144              /* Enable AFIO clock */
+    145              RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    146          
+    147              /* Enable TIM2 clock */
+    148          //    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+    149          
+    150              /* Enable I2C1 clock */
+    151              RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+    152          
+    153              /* Enable ADC1 clock */
+    154              RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+    155          
+    156              /* SPI clock enable */
+    157          //    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+    158          //    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+    159          }
+    160          
+    161          /*******************************************************************************
+    162          * Function Name  : NVIC_Configuration
+    163          * Description    : Configures Vector Table base location.
+    164          * Input          : None
+    165          * Output         : None
+    166          * Return         : None
+    167          *******************************************************************************/
+    168          void NVIC_Configuration(void)
+    169          { 
+    170              NVIC_InitTypeDef NVIC_InitStructure;
+    171          
+    172          #ifdef  VECT_TAB_RAM
+    173              /* Set the Vector Table base location at 0x20000000 */ 
+    174              NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0); 
+    175          #else  /* VECT_TAB_FLASH  */
+    176              /* Set the Vector Table base location at 0x08000000 */ 
+    177              NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);   
+    178          #endif
+    179          
+    180              /* Configure one bit for preemption priority */
+    181          //    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+    182              NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    183          
+    184              /* Enable the EXTI0 Interrupt */
+    185              NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+    186              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    187              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    188              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    189              NVIC_Init(&NVIC_InitStructure);
+    190          
+    191              /* Enable the EXTI1 Interrupt */
+    192              NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
+    193              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    194              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    195              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    196              NVIC_Init(&NVIC_InitStructure);
+    197          
+    198              /* Enable the EXTI2 Interrupt */
+    199              NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+    200              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    201              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    202              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    203              NVIC_Init(&NVIC_InitStructure);
+    204          
+    205              /* Enable the EXTI3 Interrupt */
+    206              NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+    207              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    208              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    209              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    210              NVIC_Init(&NVIC_InitStructure);
+    211          
+    212              /* Enable the EXTI9-5 Interrupt */
+    213              NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+    214              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    215              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    216              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    217              NVIC_Init(&NVIC_InitStructure);
+    218          
+    219              /* Enable the EXTI15-10 Interrupt */
+    220              NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+    221              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    222              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    223              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    224              NVIC_Init(&NVIC_InitStructure);
+    225          
+    226              /* Enable the USART1 for Serial Interrupt */
+    227              NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    228              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    229              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    230              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    231              NVIC_Init(&NVIC_InitStructure);
+    232          
+    233              /* Enable the USART2 for Comm Interrupt */
+    234              NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+    235              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    236              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    237              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    238              NVIC_Init(&NVIC_InitStructure);
+    239          
+    240              /* Enable the TIM2 Interrupt */
+    241              NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    242              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    243              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    244              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    245              NVIC_Init(&NVIC_InitStructure);
+    246          
+    247              /* I2C Interrupt */
+    248          
+    249              NVIC_SetPriority(I2C1_EV_IRQn, 0x00); 
+    250              NVIC_EnableIRQ(I2C1_EV_IRQn);
+    251          
+    252              NVIC_SetPriority(I2C1_ER_IRQn, 0x01); 
+    253              NVIC_EnableIRQ(I2C1_ER_IRQn);
+    254              
+    255              NVIC_SetPriority(I2C2_EV_IRQn, 0x00);
+    256              NVIC_EnableIRQ(I2C2_EV_IRQn);
+    257          
+    258              NVIC_SetPriority(I2C2_ER_IRQn, 0x01); 
+    259              NVIC_EnableIRQ(I2C2_ER_IRQn);
+    260          }
+    261          
+    262          /*******************************************************************************
+    263          * Function Name  : Set_USBClock
+    264          * Description    : Configures USB Clock input (48MHz).
+    265          * Input          : None.
+    266          * Output         : None.
+    267          * Return         : None.
+    268          *******************************************************************************/
+    269          void Set_USBClock(void)
+    270          {
+    271              /* Select USBCLK source */
+    272              RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+    273          
+    274              /* Enable USB clock */
+    275              RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+    276          }
+    277          
+    278          /*******************************************************************************
+    279          * Function Name  : Enter_LowPowerMode.
+    280          * Description    : Power-off system clocks and power while entering suspend mode.
+    281          * Input          : None.
+    282          * Output         : None.
+    283          * Return         : None.
+    284          *******************************************************************************/
+    285          void Enter_LowPowerMode(void)
+    286          {
+    287              /* Set the device state to suspend */
+    288              bDeviceState = SUSPENDED;
+    289          
+    290          #if 0
+    291              /* Clear EXTI Line18 pending bit */
+    292              EXTI_ClearITPendingBit(GPIO_EXTI_Line_KEY1);
+    293          #endif
+    294          
+    295              /* Request to enter STOP mode with regulator in low power mode */
+    296              PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+    297          }
+    298          
+    299          /*******************************************************************************
+    300          * Function Name  : Leave_LowPowerMode.
+    301          * Description    : Restores system clocks and power while exiting suspend mode.
+    302          * Input          : None.
+    303          * Output         : None.
+    304          * Return         : None.
+    305          *******************************************************************************/
+    306          void Leave_LowPowerMode(void)
+    307          {
+    308              DEVICE_INFO *pInfo = &Device_Info;
+    309          
+    310              /* Enable HSE */
+    311              RCC_HSEConfig(RCC_HSE_ON);
+    312          
+    313              /* Wait till HSE is ready */
+    314              RCC_WaitForHSEStartUp();
+    315          
+    316              /* Enable PLL */
+    317              RCC_PLLCmd(ENABLE);
+    318          
+    319              /* Wait till PLL is ready */
+    320              while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+    321              {}
+    322          
+    323              /* Select PLL as system clock source */
+    324              RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+    325          
+    326              /* Wait till PLL is used as system clock source */
+    327              while (RCC_GetSYSCLKSource() != 0x08)
+    328              {}
+    329          
+    330              /* Set the device state to the correct state */
+    331              if (pInfo->Current_Configuration != 0)
+    332              {
+    333                  /* Device configured */
+    334                  bDeviceState = CONFIGURED;
+    335              }
+    336              else 
+    337              {
+    338                  bDeviceState = ATTACHED;
+    339              }
+    340          }
+    341          
+    342          /*******************************************************************************
+    343          * Function Name  : USB_Interrupts_Config.
+    344          * Description    : Configures the USB interrupts.
+    345          * Input          : None.
+    346          * Output         : None.
+    347          * Return         : None.
+    348          *******************************************************************************/
+    349          void USB_Interrupts_Config(void)
+    350          {
+    351              NVIC_InitTypeDef NVIC_InitStructure;
+    352          
+    353              /* 2 bit for pre-emption priority, 2 bits for subpriority */
+    354              NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    355          
+    356              /* Enable the USB interrupt */
+    357              NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+    358              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    359              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    360              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    361              NVIC_Init(&NVIC_InitStructure);
+    362          
+    363              /* Enable the USB Wake-up interrupt */
+    364              NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+    365              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    366              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    367              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    368              NVIC_Init(&NVIC_InitStructure);
+    369              
+    370              /* Enable the DMA1 Channel1 Interrupt */
+    371              NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
+    372              NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    373              NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    374              NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    375              NVIC_Init(&NVIC_InitStructure);
+    376          }
+    377          
+    378          /*******************************************************************************
+    379          * Function Name  : USB_Cable_Config.
+    380          * Description    : Software Connection/Disconnection of USB Cable.
+    381          * Input          : NewState: new state.
+    382          * Output         : None.
+    383          * Return         : None
+    384          *******************************************************************************/
+    385          void USB_Cable_Config (FunctionalState NewState)
+    386          { 
+    387              if (NewState != DISABLE)
+    388              {
+    389                  GPIO_ResetBits(GPIO_USB_DISCONNECT, GPIO_USB_DISCONNECT_PIN);
+    390              }
+    391              else
+    392              {
+    393                  GPIO_SetBits(GPIO_USB_DISCONNECT, GPIO_USB_DISCONNECT_PIN);
+    394              }
+    395          }
+    396          
+    397          /*******************************************************************************
+    398          * Function Name  : USB_Initialize.
+    399          * Description    : 
+    400          * Input          : None.
+    401          * Output         : None.
+    402          * Return         : None
+    403          *******************************************************************************/
+    404          void USB_Initialize (void)
+    405          { 
+    406              EXTI_InitTypeDef EXTI_InitStructure;
+    407              GPIO_InitTypeDef GPIO_InitStructure;    
+    408          
+    409              /******************** Clock Enable ********************/
+    410              /* Enable GPIOA clock */
+    411              RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    412          
+    413              /* Enable AFIO clock */
+    414              RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    415              
+    416              /******************** GPIO configure ********************/
+    417              /* USB_DISCONNECT used as USB pull-up */
+    418              GPIO_InitStructure.GPIO_Pin   = GPIO_USB_DISCONNECT_PIN;
+    419              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    420              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_OD;
+    421              GPIO_Init(GPIO_USB_DISCONNECT, &GPIO_InitStructure);  
+    422              GPIO_SetBits(GPIO_USB_DISCONNECT, GPIO_USB_DISCONNECT_PIN);
+    423              
+    424              /* USB Wakeup from suspend event */
+    425              EXTI_ClearITPendingBit(EXTI_Line18);
+    426              EXTI_InitStructure.EXTI_Line    = EXTI_Line18; // USB resume from suspend mode
+    427              EXTI_InitStructure.EXTI_Mode    = EXTI_Mode_Interrupt;    
+    428              EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+    429              EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    430              EXTI_Init(&EXTI_InitStructure);
+    431          }
+    432          
+    433          /*
+    434           * Name   : GPIO_Configuration
+    435           * Input  : None
+    436           * Output : None
+    437           * Return : None
+    438           */
+    439          void GPIO_Configuration(void)
+    440          {
+    441              GPIO_InitTypeDef GPIO_InitStructure;
+    442          
+    443              // UART configuration ...
+    444          
+    445              /* Configure USARTx_Tx as alternate function push-pull */
+    446              GPIO_InitStructure.GPIO_Pin   = GPIO_USART_1_Tx_Pin;
+    447              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    448              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+    449              GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+    450          
+    451              /* Configure USARTx_Rx as input floating */
+    452              GPIO_InitStructure.GPIO_Pin  = GPIO_USART_1_Rx_Pin;
+    453              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    454              GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    455              GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+    456          
+    457              /* Configure PB.00 (ADC Channel8) as analog input -------------------------*/
+    458              GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
+    459              GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    460              GPIO_Init(GPIOB, &GPIO_InitStructure);
+    461          }
+    462          
+    463          /*******************************************************************************
+    464          * Function Name  : Get_SerialNum.
+    465          * Description    : Create the serial number string descriptor.
+    466          * Input          : None.
+    467          * Output         : None.
+    468          * Return         : None.
+    469          *******************************************************************************/
+    470          void Get_SerialNum(void)
+    471          {
+    472            uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+    473            
+    474            Device_Serial0 = *(uint32_t*)(0x1FFFF7E8);
+    475            Device_Serial1 = *(uint32_t*)(0x1FFFF7EC);
+    476            Device_Serial2 = *(uint32_t*)(0x1FFFF7F0);
+    477            
+    478            if(Device_Serial0 != 0)
+    479            {
+    480               CustomHID_StringSerial[2] = (uint8_t)(Device_Serial0 & 0x000000FF);  
+    481               CustomHID_StringSerial[4] = (uint8_t)((Device_Serial0 & 0x0000FF00) >> 8);
+    482               CustomHID_StringSerial[6] = (uint8_t)((Device_Serial0 & 0x00FF0000) >> 16);
+    483               CustomHID_StringSerial[8] = (uint8_t)((Device_Serial0 & 0xFF000000) >> 24);  
+    484          
+    485               CustomHID_StringSerial[10] = (uint8_t)(Device_Serial1 & 0x000000FF);  
+    486               CustomHID_StringSerial[12] = (uint8_t)((Device_Serial1 & 0x0000FF00) >> 8);
+    487               CustomHID_StringSerial[14] = (uint8_t)((Device_Serial1 & 0x00FF0000) >> 16);
+    488               CustomHID_StringSerial[16] = (uint8_t)((Device_Serial1 & 0xFF000000) >> 24); 
+    489          
+    490               CustomHID_StringSerial[18] = (uint8_t)(Device_Serial2 & 0x000000FF);  
+    491               CustomHID_StringSerial[20] = (uint8_t)((Device_Serial2 & 0x0000FF00) >> 8);
+    492               CustomHID_StringSerial[22] = (uint8_t)((Device_Serial2 & 0x00FF0000) >> 16);
+    493               CustomHID_StringSerial[24] = (uint8_t)((Device_Serial2 & 0xFF000000) >> 24); 
+    494            }   
+    495          }
+    496          
+    497          /**
+    498            * @brief  Inserts a delay time.
+    499            * @param  nTime: specifies the delay time length, in milliseconds.
+    500            * @retval None
+    501            */
+    502          void Delay(__IO uint32_t nTime)
+    503          { 
+    504              TimingDelay = nTime;
+    505          
+    506              while(TimingDelay != 0);
+    507          }
+    508          
+    509          /**
+    510            * @brief  Decrements the TimingDelay variable.
+    511            * @param  None
+    512            * @retval None
+    513            */
+    514          void TimingDelay_Decrement(void)
+    515          {
+    516              if (TimingDelay != 0x00)
+    517              { 
+    518                  TimingDelay--;
+    519              }
+    520          }
+    521          
+    522          #if 0
+    523          /*******************************************************************************
+    524          * Function Name  : SPI_Configuration
+    525          * Description    : Configures the different SDIO.
+    526          * Input          : None
+    527          * Output         : None
+    528          * Return         : None
+    529          *******************************************************************************/
+    530          void SPI_Configuration(void)
+    531          {
+    532              GPIO_InitTypeDef GPIO_InitStructure;
+    533              SPI_InitTypeDef  SPI_InitStructure;
+    534          
+    535              /* Configure SPI1 pins: SCK, MISO and MOSI ---------------------------------*/
+    536              GPIO_InitStructure.GPIO_Pin
+    537                  = GPIO_SPI_1_CLK_PIN | GPIO_SPI_1_MISO_PIN | GPIO_SPI_1_MOSI_PIN;
+    538              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    539              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+    540              GPIO_Init(GPIO_SPI_1, &GPIO_InitStructure);
+    541          
+    542              /* Configure SPI1 pins: nCS ------------------------------------------------*/
+    543              GPIO_InitStructure.GPIO_Pin   = GPIO_SPI_1_NCS_PIN;
+    544              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    545              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    546              GPIO_Init(GPIO_SPI_1, &GPIO_InitStructure);
+    547          
+    548              // NCS Pin default High
+    549              GPIO_SetBits(GPIO_SPI_1, GPIO_SPI_1_NCS_PIN);
+    550          
+    551              /* Configure SPI2 pins: SCK, MISO and MOSI ---------------------------------*/
+    552              GPIO_InitStructure.GPIO_Pin
+    553                  = GPIO_SPI_2_CLK_PIN | GPIO_SPI_2_MISO_PIN | GPIO_SPI_2_MOSI_PIN;
+    554              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    555              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+    556              GPIO_Init(GPIO_SPI_2, &GPIO_InitStructure);
+    557          
+    558              /* Configure SPI2 pins: nCS ------------------------------------------------*/
+    559              GPIO_InitStructure.GPIO_Pin   = GPIO_SPI_2_NCS_PIN;
+    560              GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    561              GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    562              GPIO_Init(GPIO_SPI_2, &GPIO_InitStructure);
+    563          
+    564              // NCS Pin default High
+    565              GPIO_SetBits(GPIO_SPI_2, GPIO_SPI_2_NCS_PIN);
+    566          
+    567              /* SPI1 Config -------------------------------------------------------------*/
+    568              SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+    569              SPI_InitStructure.SPI_Mode      = SPI_Mode_Master;
+    570              SPI_InitStructure.SPI_DataSize  = SPI_DataSize_8b;
+    571          
+    572              SPI_InitStructure.SPI_CPOL    = SPI_CPOL_Low;
+    573              SPI_InitStructure.SPI_CPHA    = SPI_CPHA_1Edge;
+    574          
+    575              SPI_InitStructure.SPI_NSS               = SPI_NSS_Soft;
+    576              SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;   // 72MHz / 16 = 4.5MHz
+    577              SPI_InitStructure.SPI_FirstBit          = SPI_FirstBit_MSB;
+    578              SPI_InitStructure.SPI_CRCPolynomial     = 7;
+    579          
+    580              /* Enable SPI1 */
+    581              SPI_Init(SPI1, &SPI_InitStructure);
+    582              SPI_Cmd(SPI1, ENABLE);
+    583          
+    584              /* Enable SPI2 */
+    585              SPI_Init(SPI2, &SPI_InitStructure);
+    586              SPI_Cmd(SPI2, ENABLE);
+    587          }
+    588          #endif
+    589          
+    590          /*
+    591           * Name   : putchar
+    592           * Input  : None
+    593           * Output : None
+    594           * Return : None
+    595           */
+    596          PUTCHAR_PROTOTYPE
+    597          {
+    598              /* Write a character to the USART */  
+    599              if( ch == '\n') {
+    600                  USART_SendData(USART1, '\r');
+    601                  while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    602                  USART_SendData(USART1, '\n');
+    603              }else {
+    604                  USART_SendData(USART1, (u8) ch);
+    605              }
+    606          
+    607              /* Loop until the end of transmission */
+    608              while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    609          
+    610              return ch;
+    611          }
+    612          
+    613          #if 0
+    614          uint8_t USART_GetCharacter(USART_TypeDef *  usart_p)
+    615          {
+    616              uint8_t data;
+    617          
+    618              /* Loop until the end of transmission */
+    619              while(USART_GetFlagStatus(usart_p, USART_FLAG_RXNE) == RESET);
+    620          
+    621              /* Write a character to the USART */
+    622              data = USART_ReceiveData(usart_p);
+    623          
+    624              USART_SendData(usart_p, data);
+    625              while(USART_GetFlagStatus(usart_p, USART_FLAG_TXE) == RESET);
+    626          
+    627              if( data == '\r' )  return (int)('\n');
+    628              else                return(data);
+    629          }
+    630          #else
+    631          uint8_t UartSerialGetChar_Wait(void)
+    632          {
+    633              while(TRUE == UartQueue_Serial_Is_Empty())
+    634              {
+    635                  ;
+    636              }
+    637              return UartQueue_Serial_DeQueue();
+    638          }
+    639          #endif
+    640          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        4  Delay
+        8  Enter_LowPowerMode
+              8 -> PWR_EnterSTOPMode
+        8  GPIO_Configuration
+              8 -> GPIO_Init
+        4  Get_SerialNum
+        8  Leave_LowPowerMode
+              8 -> RCC_GetFlagStatus
+              8 -> RCC_GetSYSCLKSource
+              8 -> RCC_HSEConfig
+              8 -> RCC_PLLCmd
+              8 -> RCC_SYSCLKConfig
+              8 -> RCC_WaitForHSEStartUp
+        8  NVIC_Configuration
+              8 -> NVIC_EnableIRQ
+              8 -> NVIC_Init
+              8 -> NVIC_PriorityGroupConfig
+              8 -> NVIC_SetPriority
+              8 -> NVIC_SetVectorTable
+        4  NVIC_EnableIRQ
+        0  NVIC_SetPriority
+        8  RCC_Configuration
+              8 -> RCC_APB1PeriphClockCmd
+              8 -> RCC_APB2PeriphClockCmd
+              8 -> SystemInit
+        8  Set_USBClock
+              8 -> RCC_APB1PeriphClockCmd
+              8 -> RCC_USBCLKConfig
+        0  TimingDelay_Decrement
+       24  USART1_Init_forSerial
+             24 -> USART_Cmd
+             24 -> USART_ITConfig
+             24 -> USART_Init
+       24  USART2_Init_forComm
+             24 -> USART_Cmd
+             24 -> USART_ITConfig
+             24 -> USART_Init
+        8  USB_Cable_Config
+              8 -> GPIO_ResetBits
+              8 -> GPIO_SetBits
+       16  USB_Initialize
+             16 -> EXTI_ClearITPendingBit
+             16 -> EXTI_Init
+             16 -> GPIO_Init
+             16 -> GPIO_SetBits
+             16 -> RCC_APB2PeriphClockCmd
+        8  USB_Interrupts_Config
+              8 -> NVIC_Init
+              8 -> NVIC_PriorityGroupConfig
+        8  UartSerialGetChar_Wait
+              8 -> UartQueue_Serial_DeQueue
+              8 -> UartQueue_Serial_Is_Empty
+        8  delay_100_milli_second
+              8 -> Delay
+        8  delay_1_second
+              8 -> Delay
+       16  fputc
+             16 -> USART_GetFlagStatus
+             16 -> USART_SendData
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable12
+       4  ??DataTable12_1
+       4  ??DataTable12_10
+       4  ??DataTable12_11
+       4  ??DataTable12_12
+       4  ??DataTable12_13
+       4  ??DataTable12_14
+       4  ??DataTable12_2
+       4  ??DataTable12_3
+       4  ??DataTable12_4
+       4  ??DataTable12_5
+       4  ??DataTable12_6
+       4  ??DataTable12_7
+       4  ??DataTable12_8
+       4  ??DataTable12_9
+       4  ADC_ConvertedValueX
+       4  ADC_ConvertedValueX_1
+      20  Delay
+      18  Enter_LowPowerMode
+      80  GPIO_Configuration
+      94  Get_SerialNum
+      68  Leave_LowPowerMode
+     348  NVIC_Configuration
+      26  NVIC_EnableIRQ
+      38  NVIC_SetPriority
+      86  RCC_Configuration
+      20  Set_USBClock
+       4  TimingDelay
+      20  TimingDelay_Decrement
+      78  USART1_Init_forSerial
+      78  USART2_Init_forComm
+      34  USB_Cable_Config
+      96  USB_Initialize
+     102  USB_Interrupts_Config
+      18  UartSerialGetChar_Wait
+      10  delay_100_milli_second
+      12  delay_1_second
+      68  fputc
+
+ 
+    12 bytes in section .bss
+ 1 374 bytes in section .text
+ 
+ 1 374 bytes of CODE memory
+    12 bytes of DATA memory
+
+Errors: none
+Warnings: none

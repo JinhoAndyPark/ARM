@@ -1,0 +1,158 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.6.53336/W32 for ARM     25/Jun/2014  14:55:05 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\L #
+#                    ibraries\STM32_USB-FS-Device_Driver\src\usb_mem.c        #
+#    Command line =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\L #
+#                    ibraries\STM32_USB-FS-Device_Driver\src\usb_mem.c -D     #
+#                    USE_STDPERIPH_DRIVER -lcN D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\Debug\List\ -lb         #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\ --diag_suppress Pe549,Pa082 -o        #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\ --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M3  #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.0_0\arm\INC\c\DLib_Config_F #
+#                    ull.h" -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu91 #
+#                    50_9Axis\project\..\inc\ -I                              #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Sensor9Axis\ -I D:\zWk.Src\Mango-M32-MPU-9150\ #
+#                    m32_Sensor_mpu9150_9Axis\project\..\PCA9555_GPIO_Ext\    #
+#                    -I D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axi #
+#                    s\project\..\OLED\ -I D:\zWk.Src\Mango-M32-MPU-9150\m32_ #
+#                    Sensor_mpu9150_9Axis\project\..\SRAM\ -I                 #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32_USB-FS-Device_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I   #
+#                    D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\..\Libraries\CMSIS\Device\ST\STM32F10x\Include\   #
+#                    -On -I "C:\Program Files (x86)\IAR Systems\Embedded      #
+#                    Workbench 6.0_0\arm\CMSIS\Include\"                      #
+#    List file    =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\List\usb_mem.lst                            #
+#    Object file  =  D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\p #
+#                    roject\Debug\Obj\usb_mem.o                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\zWk.Src\Mango-M32-MPU-9150\m32_Sensor_mpu9150_9Axis\Libraries\STM32_USB-FS-Device_Driver\src\usb_mem.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    usb_mem.c
+      4            * @author  MCD Application Team
+      5            * @version V3.4.0
+      6            * @date    29-June-2012
+      7            * @brief   Utility functions for memory transfers to/from PMA
+      8            ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          #ifndef STM32F10X_CL
+     29          
+     30          /* Includes ------------------------------------------------------------------*/
+     31          #include "usb_lib.h"
+     32          
+     33          /* Private typedef -----------------------------------------------------------*/
+     34          /* Private define ------------------------------------------------------------*/
+     35          /* Private macro -------------------------------------------------------------*/
+     36          /* Private variables ---------------------------------------------------------*/
+     37          /* Extern variables ----------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          /*******************************************************************************
+     41          * Function Name  : UserToPMABufferCopy
+     42          * Description    : Copy a buffer from user memory area to packet memory area (PMA)
+     43          * Input          : - pbUsrBuf: pointer to user memory area.
+     44          *                  - wPMABufAddr: address into PMA.
+     45          *                  - wNBytes: no. of bytes to be copied.
+     46          * Output         : None.
+     47          * Return         : None	.
+     48          *******************************************************************************/
+     49          void UserToPMABufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+     50          {
+     51            uint32_t n = (wNBytes + 1) >> 1;   /* n = (wNBytes + 1) / 2 */
+     52            uint32_t i, temp1, temp2;
+     53            uint16_t *pdwVal;
+     54            pdwVal = (uint16_t *)(wPMABufAddr * 2 + PMAAddr);
+     55            for (i = n; i != 0; i--)
+     56            {
+     57              temp1 = (uint16_t) * pbUsrBuf;
+     58              pbUsrBuf++;
+     59              temp2 = temp1 | (uint16_t) * pbUsrBuf << 8;
+     60              *pdwVal++ = temp2;
+     61              pdwVal++;
+     62              pbUsrBuf++;
+     63            }
+     64          }
+     65          /*******************************************************************************
+     66          * Function Name  : PMAToUserBufferCopy
+     67          * Description    : Copy a buffer from user memory area to packet memory area (PMA)
+     68          * Input          : - pbUsrBuf    = pointer to user memory area.
+     69          *                  - wPMABufAddr = address into PMA.
+     70          *                  - wNBytes     = no. of bytes to be copied.
+     71          * Output         : None.
+     72          * Return         : None.
+     73          *******************************************************************************/
+     74          void PMAToUserBufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+     75          {
+     76            uint32_t n = (wNBytes + 1) >> 1;/* /2*/
+     77            uint32_t i;
+     78            uint32_t *pdwVal;
+     79            pdwVal = (uint32_t *)(wPMABufAddr * 2 + PMAAddr);
+     80            for (i = n; i != 0; i--)
+     81            {
+     82              *(uint16_t*)pbUsrBuf++ = *pdwVal++;
+     83              pbUsrBuf++;
+     84            }
+     85          }
+     86          
+     87          #endif /* STM32F10X_CL */
+     88          
+     89          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       12  PMAToUserBufferCopy
+       16  UserToPMABufferCopy
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      46  PMAToUserBufferCopy
+      64  UserToPMABufferCopy
+
+ 
+ 110 bytes in section .text
+ 
+ 110 bytes of CODE memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>MStory2.0/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>268</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>867</ColumnWidth1><ColumnWidth2>231</ColumnWidth2><ColumnWidth3>57</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-14163-25740</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>MStory2.0</ExpandedNode><ExpandedNode>MStory2.0/src</ExpandedNode><ExpandedNode>MStory2.0/src/main.c</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-24388-25753</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\Administrator\&#xBC14;&#xD0D5; &#xD654;&#xBA74;\MStory2.0\Mango-M32.Firmware\M32.Src011.getchar\src\main.c</Filename><XPos>0</XPos><YPos>402</YPos><SelStart>14107</SelStart><SelEnd>14107</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Program Files\IAR Systems\Embedded Workbench 5.0 Evaluation\ARM\inc\stdint.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\Administrator\&#xBC14;&#xD0D5; &#xD654;&#xBA74;\MStory2.0\Mango-M32.Firmware\M32.Src011.getchar\inc\platform_config.h</Filename><XPos>0</XPos><YPos>189</YPos><SelStart>6375</SelStart><SelEnd>6375</SelEnd></Tab><ActiveTab>2</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00af9768><key>iaridepm.enu1</key></Toolbar-00af9768></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>657</Bottom><Right>342</Right><x>-2</x><y>-2</y><xscreen>211</xscreen><yscreen>192</yscreen><sizeHorzCX>164844</sizeHorzCX><sizeHorzCY>215247</sizeHorzCY><sizeVertCX>268750</sizeVertCX><sizeVertCY>738789</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>190</Bottom><Right>1282</Right><x>-2</x><y>-2</y><xscreen>1284</xscreen><yscreen>192</yscreen><sizeHorzCX>1003125</sizeHorzCX><sizeHorzCY>215247</sizeHorzCY><sizeVertCX>164844</sizeVertCX><sizeVertCY>215247</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
